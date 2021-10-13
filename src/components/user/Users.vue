@@ -27,7 +27,6 @@ export default {
   data () {
     return {
       queryInfo: {
-        query: '',
         pagenum: 1,
         pagesize: 8
       }
