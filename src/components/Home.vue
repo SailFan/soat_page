@@ -50,8 +50,8 @@ export default {
         1: 'el-icon-s-custom',
         2: 'el-icon-female',
         3: 'el-icon-s-custom',
-        4: 'el-icon-s-custom',
-        5: 'el-icon-s-custom'
+        4: 'el-icon-loading',
+        5: 'el-icon-smoking'
       },
       isColl: false,
       activePath: ''
