@@ -18,6 +18,19 @@
           <el-button>添加用户</el-button>
         </el-col>
       </el-row>
+      <el-table :data="userlist" border stripe>
+        <el-table-column type="index" label="#"></el-table-column>
+        <el-table-column label="姓名" prop="username"></el-table-column>
+        <el-table-column label="账号" prop="nickname"></el-table-column>
+        <el-table-column label="邮箱" prop="email"></el-table-column>
+        <el-table-column label="冻结" prop="status">
+          <template slot-scope="scope">
+            <el-switch v-model="scope.row.status">
+            </el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" ></el-table-column>
+      </el-table>
     </el-card>
   </div>
 </template>
@@ -27,9 +40,11 @@ export default {
   data () {
     return {
       queryInfo: {
-        pagenum: 1,
-        pagesize: 8
-      }
+        pagesize: 8,
+        pagenum: 1
+      },
+      userlist: [],
+      total: 0
     }
   },
   created () {
@@ -37,8 +52,10 @@ export default {
   },
   methods: {
     async getUserList () {
-      const { data: res } = await this.$http.get('', { params: this.queryInfo })
-      console.log(res)
+      const { data: res } = await this.$http.get('/auth/getUser', { params: this.queryInfo })
+      if (res.code !== 20000) return this.$message.error('获取用户列表失败')
+      this.userlist = res.data.users
+      this.total = res.total
     }
   }
 }
