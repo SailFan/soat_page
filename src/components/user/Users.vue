@@ -25,12 +25,27 @@
         <el-table-column label="邮箱" prop="email"></el-table-column>
         <el-table-column label="冻结" prop="status">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.status">
+            <el-switch v-model="scope.row.status" @change="userStateChange(scope.row.status)">
             </el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="操作" ></el-table-column>
+        <el-table-column label="操作" >
+          <template>
+            <el-tooltip class="item" effect="dark" content="编辑" placement="top">
+              <el-button type="primary" icon="el-icon-edit" size="small"></el-button>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="删除" placement="top">
+              <el-button type="danger" icon="el-icon-delete" size="small"></el-button>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="权限" placement="top">
+              <el-button type="warning" icon="el-icon-setting" size="small"></el-button>
+            </el-tooltip>
+          </template>
+        </el-table-column>
       </el-table>
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="queryInfo.pagenum" :page-sizes="[2,4,10,20]" :page-size="queryInfo.pagesize"
+        layout="total,prev, pager, next, sizes, jumper" :total="total">
+      </el-pagination>
     </el-card>
   </div>
 </template>
@@ -40,7 +55,7 @@ export default {
   data () {
     return {
       queryInfo: {
-        pagesize: 8,
+        pagesize: 2,
         pagenum: 1
       },
       userlist: [],
@@ -56,6 +71,17 @@ export default {
       if (res.code !== 20000) return this.$message.error('获取用户列表失败')
       this.userlist = res.data.users
       this.total = res.total
+    },
+    handleSizeChange (newSize) {
+      this.queryInfo.pagesize = newSize
+      this.getUserList()
+    },
+    handleCurrentChange (newPage) {
+      this.queryInfo.pagenum = newPage
+      this.getUserList()
+    },
+    userStateChange (userInfo) {
+      this.$http.put()
     }
   }
 }
