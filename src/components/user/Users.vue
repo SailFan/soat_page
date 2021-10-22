@@ -10,8 +10,8 @@
     <el-card >
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-input placeholder="请输入用户姓名，邮箱，电话进行搜索" v-model="queryInfo.query" clearable @clear="getUserList">
+            <el-button slot="append" icon="el-icon-search" @click="getUserList"></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
@@ -56,6 +56,7 @@ export default {
   data () {
     return {
       queryInfo: {
+        query: '',
         pagesize: 2,
         pagenum: 1
       },
@@ -81,9 +82,13 @@ export default {
       this.queryInfo.pagenum = newPage
       this.getUserList()
     },
-    userStateChange (userInfo) {
-      console.log(userInfo.id)
-      this.$http.get('/auth/changeStatus', { params: { id: userInfo.id } })
+    async userStateChange (userInfo) {
+      const { data: res } = await this.$http.get('/auth/changeStatus', { params: { id: userInfo.id } })
+      if (res.code !== 20000) {
+        userInfo.id = !userInfo.id
+        return this.$message.error('更新用户状态失败')
+      }
+      return this.$message.success('更新用户状态成功')
     }
   }
 }
