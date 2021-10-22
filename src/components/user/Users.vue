@@ -23,9 +23,10 @@
         <el-table-column label="姓名" prop="username"></el-table-column>
         <el-table-column label="账号" prop="nickname"></el-table-column>
         <el-table-column label="邮箱" prop="email"></el-table-column>
+        <el-table-column label="角色" prop="role"></el-table-column>
         <el-table-column label="冻结" prop="status">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.status" @change="userStateChange(scope.row.status)">
+            <el-switch v-model="scope.row.status" @change="userStateChange(scope.row)">
             </el-switch>
           </template>
         </el-table-column>
@@ -81,7 +82,8 @@ export default {
       this.getUserList()
     },
     userStateChange (userInfo) {
-      this.$http.put()
+      console.log(userInfo.id)
+      this.$http.get('/auth/changeStatus', { params: { id: userInfo.id } })
     }
   }
 }
