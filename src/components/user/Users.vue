@@ -23,6 +23,7 @@
         <el-table-column label="姓名" prop="username"></el-table-column>
         <el-table-column label="账号" prop="nickname"></el-table-column>
         <el-table-column label="邮箱" prop="email"></el-table-column>
+        <el-table-column label="电话" prop="phone"></el-table-column>
         <el-table-column label="角色" prop="role"></el-table-column>
         <el-table-column label="冻结" prop="status">
           <template slot-scope="scope">
@@ -49,13 +50,29 @@
       </el-pagination>
     </el-card>
     <el-dialog
-      title="提示"
+      title="添加用户"
       :visible.sync="userVisible"
       width="50%">
-      <span>这是一段信息</span>
+      <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="70px">
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="addForm.username" placeholder="请输入用户名"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="addForm.password"  type="password" placeholder="请输入密码"></el-input>
+        </el-form-item>
+        <el-form-item label="账号" prop="nickname">
+          <el-input v-model="addForm.nickname"   placeholder="请输入登陆账号"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="addForm.email"   placeholder="请输入邮箱"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" prop="phone">
+          <el-input v-model="addForm.phone"   placeholder="请输入电话号码"></el-input>
+        </el-form-item>
+      </el-form>
       <span slot="footer" class="dialog-footer">
-    <el-button @click="closeVisible = false">取 消</el-button>
-    <el-button type="primary" @click="closeVisible = false">确 定</el-button>
+    <el-button @click="userVisible = false">取 消</el-button>
+    <el-button type="primary" @click="userVisible = false">确 定</el-button>
   </span>
     </el-dialog>
   </div>
@@ -64,15 +81,61 @@
 <script>
 export default {
   data () {
+    var checkEmail = (rule, value, cb) => {
+      var reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+      if (reg.test(value)) {
+        return cb()
+      }
+      cb(new Error('请输入合法邮箱'))
+    }
+
+    var checkPhone = (rule, value, cb) => {
+      var reg = /^1[3456789]\d{9}$/
+      if (reg.test(value)) {
+        return cb()
+      }
+      cb(new Error('请输入合法手机号'))
+    }
+    console.log(checkPhone, checkEmail)
     return {
       queryInfo: {
         query: '',
-        pagesize: 4,
+        pagesize: 10,
         pagenum: 1
       },
       userlist: [],
       total: 0,
-      userVisible: false
+      userVisible: false,
+      addForm: {
+        username: '',
+        password: '',
+        nickname: '',
+        email: '',
+        phone: ''
+
+      },
+      addFormRules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 3, max: 10, message: '用户名3到10位' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 3, max: 10, message: '密码6到10位' }
+        ],
+        nickname: [
+          { required: true, message: '请输入登录账号', trigger: 'blur' },
+          { min: 3, max: 10, message: '用户名3到10位' }
+        ],
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { validator: checkEmail }
+        ],
+        phone: [
+          { required: true, message: '请输入电话号码', trigger: 'blur' },
+          { validator: checkPhone }
+        ]
+      }
     }
   },
   created () {
