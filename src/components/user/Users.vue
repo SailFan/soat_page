@@ -10,12 +10,12 @@
     <el-card >
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入用户姓名，邮箱，电话进行搜索" v-model="queryInfo.query" clearable @clear="getUserList">
+          <el-input placeholder="请输入姓名搜索" v-model="queryInfo.query" clearable @clear="getUserList">
             <el-button slot="append" icon="el-icon-search" @click="getUserList"></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button>添加用户</el-button>
+          <el-button @click="userVisible=true">添加用户</el-button>
         </el-col>
       </el-row>
       <el-table :data="userlist" border stripe>
@@ -48,6 +48,16 @@
         layout="total,prev, pager, next, sizes, jumper" :total="total">
       </el-pagination>
     </el-card>
+    <el-dialog
+      title="提示"
+      :visible.sync="userVisible"
+      width="50%">
+      <span>这是一段信息</span>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="closeVisible = false">取 消</el-button>
+    <el-button type="primary" @click="closeVisible = false">确 定</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -57,11 +67,12 @@ export default {
     return {
       queryInfo: {
         query: '',
-        pagesize: 2,
+        pagesize: 4,
         pagenum: 1
       },
       userlist: [],
-      total: 0
+      total: 0,
+      userVisible: false
     }
   },
   created () {
