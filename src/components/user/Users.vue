@@ -32,9 +32,9 @@
           </template>
         </el-table-column>
         <el-table-column label="操作" >
-          <template>
-            <el-tooltip class="item" effect="dark" content="编辑" placement="top">
-              <el-button type="primary" icon="el-icon-edit" size="small"></el-button>
+          <template slot-scope="scope">
+            <el-tooltip class="item" effect="dark" content="编辑"  placement="top">
+              <el-button type="primary" icon="el-icon-edit" size="small" @click="showEditDialog(scope.row.id)"></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="删除" placement="top">
               <el-button type="danger" icon="el-icon-delete" size="small"></el-button>
@@ -76,6 +76,32 @@
     <el-button type="primary" @click="addUser">确 定</el-button>
   </span>
     </el-dialog>
+    <el-dialog
+      title="编辑用户"
+      :visible.sync="editDialogVisible"
+      width="50%">
+      <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="70px">
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="editForm.username"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="editForm.password" type="password"></el-input>
+        </el-form-item>
+        <el-form-item label="账号" prop="nickname">
+          <el-input v-model="editForm.nickname"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="editForm.email"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" prop="phone">
+          <el-input v-model="editForm.phone"></el-input>
+        </el-form-item>
+        </el-form>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="editDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="editDialogVisible = false">确 定</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -99,6 +125,7 @@ export default {
     }
 
     return {
+      editForm: {},
       queryInfo: {
         query: '',
         pagesize: 10,
@@ -106,6 +133,7 @@ export default {
       },
       userlist: [],
       total: 0,
+      editDialogVisible: false,
       userVisible: false,
       addForm: {
         username: '',
@@ -118,7 +146,29 @@ export default {
       addFormRules: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 1, max: 10, message: '用户名1到10位' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 3, max: 10, message: '密码6到10位' }
+        ],
+        nickname: [
+          { required: true, message: '请输入登录账号', trigger: 'blur' },
           { min: 3, max: 10, message: '用户名3到10位' }
+        ],
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { validator: checkEmail }
+        ],
+        phone: [
+          { required: true, message: '请输入电话号码', trigger: 'blur' },
+          { validator: checkPhone }
+        ]
+      },
+      editFormRules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 1, max: 10, message: '用户名1到10位' }
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
@@ -179,6 +229,12 @@ export default {
         this.getUserList()
         return this.$message.success('添加用户成功')
       })
+    },
+    async showEditDialog (id) {
+      const { data: res } = await this.$http.get('/auth/getUserDetail', { params: { id: id } })
+      if (res.code !== 20000) return this.$message.error('查询用户失败')
+      this.editForm = res
+      this.editDialogVisible = true
     }
   }
 }
