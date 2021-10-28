@@ -79,7 +79,8 @@
     <el-dialog
       title="编辑用户"
       :visible.sync="editDialogVisible"
-      width="50%">
+      width="50%"
+      @close="editDialogClosed">
       <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="70px">
         <el-form-item label="用户名" prop="username">
           <el-input v-model="editForm.username"></el-input>
@@ -235,6 +236,9 @@ export default {
       if (res.code !== 20000) return this.$message.error('查询用户失败')
       this.editForm = res.data
       this.editDialogVisible = true
+    },
+    editDialogClosed () {
+      this.$refs.editFormRef.resetFields()
     }
   }
 }
