@@ -233,7 +233,7 @@ export default {
     async showEditDialog (id) {
       const { data: res } = await this.$http.get('/auth/getUserDetail', { params: { id: id } })
       if (res.code !== 20000) return this.$message.error('查询用户失败')
-      this.editForm = res
+      this.editForm = res.data
       this.editDialogVisible = true
     }
   }
