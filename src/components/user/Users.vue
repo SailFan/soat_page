@@ -100,7 +100,7 @@
         </el-form>
       <span slot="footer" class="dialog-footer">
     <el-button @click="editDialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="editDialogVisible = false">确 定</el-button>
+    <el-button type="primary" @click="editUserInfo">确 定</el-button>
   </span>
     </el-dialog>
   </div>
@@ -239,6 +239,12 @@ export default {
     },
     editDialogClosed () {
       this.$refs.editFormRef.resetFields()
+    },
+    editUserInfo () {
+      this.$refs.editFormRef.validate(valid => {
+        if (valid === false) return
+        $
+      })
     }
   }
 }
