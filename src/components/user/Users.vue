@@ -37,7 +37,7 @@
               <el-button type="primary" icon="el-icon-edit" size="small" @click="showEditDialog(scope.row.id)"></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="删除" placement="top">
-              <el-button type="danger" icon="el-icon-delete" size="small"></el-button>
+              <el-button type="danger" icon="el-icon-delete" size="small" @click="removeUserById(scope.row.id)"></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="权限" placement="top">
               <el-button type="warning" icon="el-icon-setting" size="small"></el-button>
@@ -100,7 +100,7 @@
         </el-form>
       <span slot="footer" class="dialog-footer">
     <el-button @click="editDialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="editUserInfo">确 定</el-button>
+    <el-button type="primary"  @click="editUserInfo">确 定</el-button>
   </span>
     </el-dialog>
   </div>
@@ -241,10 +241,22 @@ export default {
       this.$refs.editFormRef.resetFields()
     },
     editUserInfo () {
-      this.$refs.editFormRef.validate(valid => {
-        if (valid === false) return
-        $
+      this.$refs.editFormRef.validate(async valid => {
+        if (!valid) return
+        const { data: res } = await this.$http.post('/auth/modificationUser', this.editForm)
+        if (res.code !== 20000) return this.$message.error('更新失败')
+        this.editDialogVisible = false
+        this.getUserList()
+        this.$message.success('更新用户信息成功')
       })
+    },
+    async removeUserById (id) {
+      const res = await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }.catch(err => err))
+      console.log(res)
     }
   }
 }
