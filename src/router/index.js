@@ -4,6 +4,7 @@ import Login from '@/components/Login'
 import Home from '@/components/Home'
 import Statement from '@/components/Statement'
 import Users from '@/components/user/Users'
+import Permission from '@/components/permissions/Permission'
 import '../assets/css/global.css'
 
 Vue.use(VueRouter)
@@ -17,6 +18,7 @@ const routes = [
     redirect: '/statement',
     children: [
       { path: '/statement', component: Statement },
+      { path: '/permission', component: Permission },
       { path: '/users', component: Users }]
   }
 ]
