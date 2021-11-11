@@ -251,12 +251,19 @@ export default {
       })
     },
     async removeUserById (id) {
-      const res = await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      const confirmRes = await this.$confirm('是否永久删除该用户', '删除用户', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }.catch(err => err))
-      console.log(res)
+      }).catch(err => err)
+      console.log(confirmRes)
+      if (confirmRes !== 'confirm') {
+        return this.$message.info('删除操作取消')
+      }
+      const { data: res } = await this.$http.get('/auth/delUser', { params: { id: id } })
+      if (res.code !== 20000) return this.$message.error('删除用户失败')
+      this.$message.success('删除用户成功')
+      this.getUserList()
     }
   }
 }
