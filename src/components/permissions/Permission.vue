@@ -35,13 +35,42 @@
         <el-table-column label="操作" width="300px">
           <template>
 <!--            slot-scope="scope"-->
-            <el-button size="mini" type="primary" icon="el-icon-edit">编辑</el-button>
-            <el-button  size="mini" type="danger" icon="el-icon-delete">删除</el-button>
-            <el-button  size="mini" type="warn" icon="el-icon-setting">分配权限</el-button>
+            <el-button size="mini" type="primary" icon="el-icon-edit" @click="editRoleDialog()">编辑</el-button>
+            <el-button  size="mini" type="danger" icon="el-icon-delete" @click="removeRole">删除</el-button>
+            <el-button  size="mini" type="warn" icon="el-icon-setting" @click="showPermissionDialog()">分配权限</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
+    <el-dialog title="分配权限" :visible.sync="setPermissionDialogVisible" width="51%" center>
+      <template>
+        <el-transfer  style="text-align: left; display: inline-block" :titles="['未分配的权限', '已获得的权限']" :button-texts="['减权限', '加权限']" v-model="value" :format="{
+        noChecked: '${total}',
+        hasChecked: '${checked}/${total}'
+      }" :data="data">
+        </el-transfer>
+      </template>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="setPermissionDialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="setPermissionDialogVisible = false">确 定</el-button>
+    </span>
+    </el-dialog>
+<!--    编辑角色-->
+    <el-dialog
+      title="编辑角色"
+      :visible.sync="RoledialogVisible"
+      width="30%"
+      :before-close="handleClose">
+      <el-form label-width="70px">
+        <el-form-item label="用户名" >
+          <el-input></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="RoledialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="RoledialogVisible = false">确 定</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -49,7 +78,9 @@
 export default {
   data () {
     return {
-      permissions: []
+      permissions: [],
+      setPermissionDialogVisible: false,
+      RoledialogVisible: false
     }
   },
   created () {
@@ -64,7 +95,7 @@ export default {
       this.permissions = res.data
     },
     async removePermission (role, pid) {
-      const result = await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      const result = await this.$confirm('确认删除权限', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -78,6 +109,22 @@ export default {
       }
       this.permissionslist()
       this.$message.success('权限删除成功')
+    },
+    showPermissionDialog () {
+      this.setPermissionDialogVisible = true
+    },
+    editRoleDialog () {
+      this.RoledialogVisible = true
+    },
+    async removeRole () {
+      const result = await this.$confirm('确认删除角色', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).catch(err => err)
+      if (result !== 'confirm') {
+        return this.$message.info('用户取消删除')
+      }
     }
   }
 }
