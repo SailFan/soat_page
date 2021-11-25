@@ -30,7 +30,7 @@
         </el-table-column>
         <el-table-column type="index" label="#"></el-table-column>
         <el-table-column label="角色名称" prop="roleName"></el-table-column>
-        <el-table-column label="权限名称" prop="permissionsList"></el-table-column>
+<!--        <el-table-column label="权限名称" prop="permissionsList"></el-table-column>-->
 
         <el-table-column label="操作" width="300px">
           <template>
@@ -72,7 +72,7 @@ export default {
       if (result !== 'confirm') {
         return this.$message.info('用户取消删除')
       }
-      const { data: res } = await this.$http.get('/role/removeRolePermission', { params: role.rid, pid })
+      const { data: res } = await this.$http.get('/rp/removeRolePermission', { params: { rid: role.rid, pid: pid } })
       if (res.code !== 20000) {
         return this.$message.error('删除权限失败')
       }
