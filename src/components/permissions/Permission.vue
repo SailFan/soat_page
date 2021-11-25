@@ -29,8 +29,8 @@
           </template>
         </el-table-column>
         <el-table-column type="index" label="#"></el-table-column>
-        <el-table-column label="角色名称" prop="roleName"></el-table-column>
-<!--        <el-table-column label="权限名称" prop="permissionsList"></el-table-column>-->
+        <el-table-column label="角色名称" prop="roleTag"></el-table-column>
+        <el-table-column label="角色标签" prop="roleName"></el-table-column>
 
         <el-table-column label="操作" width="300px">
           <template>
