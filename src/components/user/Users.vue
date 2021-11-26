@@ -39,7 +39,7 @@
             <el-tooltip class="item" effect="dark" content="删除" placement="top">
               <el-button type="danger" icon="el-icon-delete" size="small" @click="removeUserById(scope.row.id)"></el-button>
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="权限" placement="top">
+            <el-tooltip class="item" effect="dark" content="角色" placement="top">
               <el-button type="warning" icon="el-icon-setting" size="small"></el-button>
             </el-tooltip>
           </template>

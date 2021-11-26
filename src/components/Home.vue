@@ -1,5 +1,4 @@
 <template>
-
   <el-container class="home_container">
     <el-header>
       <div>
