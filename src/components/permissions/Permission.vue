@@ -33,10 +33,9 @@
         <el-table-column label="角色标签" prop="roleName"></el-table-column>
 
         <el-table-column label="操作" width="300px">
-          <template>
-<!--            slot-scope="scope"-->
-            <el-button size="mini" type="primary" icon="el-icon-edit" @click="editRoleDialog()">编辑</el-button>
-            <el-button  size="mini" type="danger" icon="el-icon-delete" @click="removeRole">删除</el-button>
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" icon="el-icon-edit" @click="editRoleDialog(scope.row)">编辑</el-button>
+            <el-button  size="mini" type="danger" icon="el-icon-delete" @click="removeRole(scope.row.rid)">删除</el-button>
             <el-button  size="mini" type="warn" icon="el-icon-setting" @click="showPermissionDialog()">分配权限</el-button>
           </template>
         </el-table-column>
@@ -47,7 +46,7 @@
         <el-transfer  style="text-align: center; display: inline-block" :titles="['未分配的权限', '已获得的权限']" :button-texts="['减权限', '加权限']" v-model="value" :format="{
         noChecked: '${total}',
         hasChecked: '${checked}/${total}'
-      }" :data="PermissionTransferdata">
+      }" :data="permissionTransferdata">
         </el-transfer>
       </template>
       <span slot="footer" class="dialog-footer">
@@ -60,14 +59,14 @@
       title="编辑角色"
       :visible.sync="RoledialogVisible"
       width="30%">
-      <el-form label-width="70px">
-        <el-form-item label="用户名" >
-          <el-input></el-input>
+      <el-form label-width="70px" :model="editRoleForm" :rules="editRoleFormRules" ref="editFormRef">
+        <el-form-item label="用户名" prop="roleName">
+          <el-input v-model="editRoleForm.roleName"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-    <el-button @click="RoledialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="RoledialogVisible = false">确 定</el-button>
+          <el-button @click="RoledialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="Rolededit">确 定</el-button>
   </span>
     </el-dialog>
   </div>
@@ -81,15 +80,41 @@ export default {
       permissions: [],
       setPermissionDialogVisible: false,
       RoledialogVisible: false,
-      PermissionTransferdata: this.generateData(),
-      value: [1, 4]
+      permissionTransferdata: [],
+      value: [1, 4],
+      editRoleForm: {
+      },
+      editRoleFormRules: {
+        roleName: [
+          {
+            required: true,
+            message: '请输入角色名称',
+            trigger: 'blur'
+          },
+          {
+            min: 1,
+            max: 10,
+            message: '角色名名称1到10位'
+          }
+        ]
+      }
     }
   },
   created () {
     this.permissionslist()
-    console.log(this.PermissionTransferdata)
+    this.generateData()
   },
   methods: {
+    Rolededit (role) {
+      this.$refs.editFormRef.validate(async vaild => {
+        if (!vaild) return
+        const { data: res } = await this.$http.post('/role/editRole', this.editRoleForm)
+        if (res.code !== 20000) return this.$message.error('角色名称修改失败')
+        this.RoledialogVisible = false
+        this.permissionslist()
+        this.$message.success('更新角色信息成功')
+      })
+    },
     async permissionslist () {
       const { data: res } = await this.$http.get('/role/getRoleList')
       if (res.code !== 20000) {
@@ -116,10 +141,13 @@ export default {
     showPermissionDialog () {
       this.setPermissionDialogVisible = true
     },
-    editRoleDialog () {
+    async  editRoleDialog (row) {
+      const { data: res } = await this.$http.get('/role/getRole', { params: { rid: row.rid } })
+      if (res.code !== 20000) return this.$message.error('获取指定角色失败')
+      this.editRoleForm = res.data
       this.RoledialogVisible = true
     },
-    async removeRole () {
+    async removeRole (rid) {
       const result = await this.$confirm('确认删除角色', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -128,21 +156,26 @@ export default {
       if (result !== 'confirm') {
         return this.$message.info('用户取消删除')
       }
+      const { data: res } = await this.$http.get('/role/delRole/', { params: { rid: rid } })
+      if (res.code !== 20000) {
+        return this.$message.error('角色删除失败')
+      }
+      this.permissionslist()
+      this.$message.success('角色删除成功')
     },
     async generateData () {
       const { data: res } = await this.$http.get('/permission/getPermissionList')
       if (res.code !== 20000) {
         return this.$message.error('获取权限列表失败')
       }
-      const dataList = []
-      for (let i = 1; i <= res.data.length; i++) {
-        dataList.push({
-          key: i,
-          label: `${i.name}`,
-          disabled: i % 4 === 0
-        })
-      }
-      return dataList
+      const list = res.data.map((item, index) => {
+        return {
+          key: index,
+          name: item.name
+        }
+      })
+      this.permissionTransferdata = list
+      console.log(list)
     }
   }
 }
