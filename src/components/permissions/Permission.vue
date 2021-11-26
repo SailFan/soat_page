@@ -42,12 +42,12 @@
         </el-table-column>
       </el-table>
     </el-card>
-    <el-dialog title="分配权限" :visible.sync="setPermissionDialogVisible" width="51%" center>
+    <el-dialog title="分配权限" :visible.sync="setPermissionDialogVisible" width="51%" center >
       <template>
-        <el-transfer  style="text-align: left; display: inline-block" :titles="['未分配的权限', '已获得的权限']" :button-texts="['减权限', '加权限']" v-model="value" :format="{
+        <el-transfer  style="text-align: center; display: inline-block" :titles="['未分配的权限', '已获得的权限']" :button-texts="['减权限', '加权限']" v-model="value" :format="{
         noChecked: '${total}',
         hasChecked: '${checked}/${total}'
-      }" :data="data">
+      }" :data="PermissionTransferdata">
         </el-transfer>
       </template>
       <span slot="footer" class="dialog-footer">
@@ -59,8 +59,7 @@
     <el-dialog
       title="编辑角色"
       :visible.sync="RoledialogVisible"
-      width="30%"
-      :before-close="handleClose">
+      width="30%">
       <el-form label-width="70px">
         <el-form-item label="用户名" >
           <el-input></el-input>
@@ -75,16 +74,20 @@
 </template>
 
 <script>
+
 export default {
   data () {
     return {
       permissions: [],
       setPermissionDialogVisible: false,
-      RoledialogVisible: false
+      RoledialogVisible: false,
+      PermissionTransferdata: this.generateData(),
+      value: [1, 4]
     }
   },
   created () {
     this.permissionslist()
+    console.log(this.PermissionTransferdata)
   },
   methods: {
     async permissionslist () {
@@ -125,6 +128,21 @@ export default {
       if (result !== 'confirm') {
         return this.$message.info('用户取消删除')
       }
+    },
+    async generateData () {
+      const { data: res } = await this.$http.get('/permission/getPermissionList')
+      if (res.code !== 20000) {
+        return this.$message.error('获取权限列表失败')
+      }
+      const dataList = []
+      for (let i = 1; i <= res.data.length; i++) {
+        dataList.push({
+          key: i,
+          label: `${i.name}`,
+          disabled: i % 4 === 0
+        })
+      }
+      return dataList
     }
   }
 }
