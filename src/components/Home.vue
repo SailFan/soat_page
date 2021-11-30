@@ -3,7 +3,7 @@
     <el-header>
       <div>
         <img src="" alt="">
-        <span>测试名称</span>
+        <span>测试平台</span>
       </div>
       <el-button type="info" @click='logout'>登出</el-button>
     </el-header>
@@ -46,11 +46,11 @@ export default {
     return {
       menulist: [],
       iclist: {
-        1: 'el-icon-s-custom',
-        2: 'el-icon-female',
+        1: 'el-icon-s-unfold',
+        2: 'el-icon-s-data',
         3: 'el-icon-s-custom',
-        4: 'el-icon-loading',
-        5: 'el-icon-smoking'
+        4: 'el-icon-s-management',
+        5: 'el-icon-setting'
       },
       isColl: false,
       activePath: ''
