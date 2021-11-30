@@ -5,6 +5,8 @@ import Home from '@/components/Home'
 import Statement from '@/components/Statement'
 import Users from '@/components/user/Users'
 import Permission from '@/components/permissions/Permission'
+import Accounts from '@/components/resources/Accounts'
+import Devices from '@/components/resources/Devices'
 import '../assets/css/global.css'
 
 Vue.use(VueRouter)
@@ -19,6 +21,8 @@ const routes = [
     children: [
       { path: '/statement', component: Statement },
       { path: '/permission', component: Permission },
+      { path: '/accounts', component: Accounts },
+      { path: '/devices', component: Devices },
       { path: '/users', component: Users }]
   }
 ]
