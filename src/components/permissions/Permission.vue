@@ -13,48 +13,55 @@
         <el-table-column type="expand">
           <template slot-scope="scope">
             <el-tag type="info" v-if="scope.row.permissionsList.length==0">暂无权限</el-tag>
-<!--            <el-row style="display: flex;align-items: center" v-else :class="['bdbottom', i1 === 0 ? 'bdtop' : '']"  v-for="(item1, i1) in scope.row.permissionsList" :key="item1.pid">-->
+            <!--            <el-row style="display: flex;align-items: center" v-else :class="['bdbottom', i1 === 0 ? 'bdtop' : '']"  v-for="(item1, i1) in scope.row.permissionsList" :key="item1.pid">-->
             <el-row v-else>
               <el-col :span="24">
-                <el-tag closable  type="success" v-for="(item1) in scope.row.permissionsList" :key="item1.pid" @close="removePermission(scope.row,item1.pid)">{{item1.name}}</el-tag>
+                <el-tag closable type="success" v-for="(item1) in scope.row.permissionsList" :key="item1.pid"
+                        @close="removePermission(scope.row,item1.pid)">{{ item1.name }}
+                </el-tag>
               </el-col>
-<!--              <el-col :span="14">-->
-<!--                <el-row>-->
-<!--                  <el-col>-->
-<!--                    <el-tag closable @close="removePermission(scope.row,item2.pcid)" v-for="(item2) in item1.queryChildrePermission" :key="item2.pcId" type="success">{{item2.name}}</el-tag>-->
-<!--                  </el-col>-->
-<!--                </el-row>-->
-<!--              </el-col>-->
+              <!--              <el-col :span="14">-->
+              <!--                <el-row>-->
+              <!--                  <el-col>-->
+              <!--                    <el-tag closable @close="removePermission(scope.row,item2.pcid)" v-for="(item2) in item1.queryChildrePermission" :key="item2.pcId" type="success">{{item2.name}}</el-tag>-->
+              <!--                  </el-col>-->
+              <!--                </el-row>-->
+              <!--              </el-col>-->
             </el-row>
           </template>
         </el-table-column>
         <el-table-column type="index" label="#"></el-table-column>
         <el-table-column label="角色名称" prop="roleName"></el-table-column>
-<!--        <el-table-column label="角色名称" prop="roleTag"></el-table-column>-->
+        <!--        <el-table-column label="角色名称" prop="roleTag"></el-table-column>-->
 
         <el-table-column label="操作" width="300px">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" icon="el-icon-edit" @click="editRoleDialog(scope.row)">编辑</el-button>
-            <el-button  size="mini" type="danger" icon="el-icon-delete" @click="removeRole(scope.row.rid)">删除</el-button>
-            <el-button  size="mini" type="warn" icon="el-icon-setting" @click="showPermissionDialog()">分配权限</el-button>
+            <el-button size="mini" type="danger" icon="el-icon-delete" @click="removeRole(scope.row.rid)">删除</el-button>
+            <el-button size="mini" type="warn" icon="el-icon-setting" @click="showPermissionDialog(scope.row.rid)">分配权限</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
-    <el-dialog title="分配权限" :visible.sync="setPermissionDialogVisible" width="51%" center >
+    <el-dialog title="分配权限" :visible.sync="setPermissionDialogVisible" width="51%" center>
       <template>
-        <el-transfer  style="text-align: center; display: inline-block" :titles="['未分配的权限', '已获得的权限']" :button-texts="['减权限', '加权限']" v-model="value" :format="{
+        <el-transfer :titles="['未分配的权限', '已获得的权限']" :button-texts="['减权限', '加权限']" v-model="value" :format="{
         noChecked: '${total}',
         hasChecked: '${checked}/${total}'
-      }" :data="permissionTransferdata">
+      }" :data="permissionTransferdata"
+                     :props="{
+      key: 'key',
+      label: 'name'}"
+       filterable filter-placeholder
+        >
         </el-transfer>
       </template>
       <span slot="footer" class="dialog-footer">
     <el-button @click="setPermissionDialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="setPermissionDialogVisible = false">确 定</el-button>
+      <el-button type="primary" @click="submitPermission">确 定</el-button>
     </span>
     </el-dialog>
-<!--    编辑角色-->
+    <!--    编辑角色-->
     <el-dialog
       title="编辑角色"
       :visible.sync="RoledialogVisible"
@@ -92,14 +99,14 @@
 export default {
   data () {
     return {
+      RoleId: '',
       permissions: [],
       addRoledialogVisible: false,
       setPermissionDialogVisible: false,
       RoledialogVisible: false,
       permissionTransferdata: [],
-      value: [1, 4],
-      editRoleForm: {
-      },
+      value: [],
+      editRoleForm: {},
       addRoleForm: {
         roleName: ''
       },
@@ -177,17 +184,23 @@ export default {
       if (result !== 'confirm') {
         return this.$message.info('用户取消删除')
       }
-      const { data: res } = await this.$http.get('/rp/removeRolePermission', { params: { rid: role.rid, pid: pid } })
+      const { data: res } = await this.$http.get('/rp/removeRolePermission', {
+        params: {
+          rid: role.rid,
+          pid: pid
+        }
+      })
       if (res.code !== 20000) {
         return this.$message.error('删除权限失败')
       }
       this.permissionslist()
       this.$message.success('权限删除成功')
     },
-    showPermissionDialog () {
+    showPermissionDialog (rid) {
+      this.RoleId = rid
       this.setPermissionDialogVisible = true
     },
-    async  editRoleDialog (row) {
+    async editRoleDialog (row) {
       const { data: res } = await this.$http.get('/role/getRole', { params: { rid: row.rid } })
       if (res.code !== 20000) return this.$message.error('获取指定角色失败')
       this.editRoleForm = res.data
@@ -214,17 +227,24 @@ export default {
       if (res.code !== 20000) {
         return this.$message.error('获取权限列表失败')
       }
-      const list = res.data.map((item, index) => {
+      const list = res.data.map((item) => {
         return {
-          key: index,
+          key: item.pid,
           name: item.name
         }
       })
       this.permissionTransferdata = list
-      console.log(list)
     },
     showAddRoleDialog () {
       this.addRoledialogVisible = true
+    },
+    async submitPermission () {
+      this.setPermissionDialogVisible = false
+      const { data: res } = await this.$http.post('/rp/addRP', {
+        rid: this.RoleId,
+        pid: this.value
+      })
+      console.log(res)
     }
   }
 }
@@ -234,14 +254,18 @@ export default {
 .el-tag {
   margin: 7px;
 }
+
 .bdtop {
   border-top: 1px solid #eeeeee;
 }
+
 .bdbottom {
   border-bottom: 1px solid #eeeeee;
 }
+
 .el-empty {
   height: 10px;
+
   image {
     size: 5px;
   }
