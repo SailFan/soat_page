@@ -11,26 +11,29 @@
       <el-aside :width="isColl ? '64px' : '200px'">
         <div class="toggle-buttom" @click="toggleC">|||</div>
         <el-menu
-          unique-opened
           router
+          unique-opened
           background-color="#333744"
           text-color="#fff"
           active-text-color="#409EFF"
-          :default-active="activePath"
           :collapse-transition="false"
           :collapse="isColl">
-          <el-submenu :index="item.path" v-for='item in menulist' :key="item.id">
+          <el-submenu :index="item.path" v-for='item in menulist' :key="item.id" @click="savaNav(item.path)">
             <template slot="title">
-              <i :class="iclist[item.id]"></i>
-              <span>{{item.navName}}</span>
+              <i :class="iclist[item.id]" @click="savaNav(item.path)"></i>
+              <span @click="savaNav(item.path)">{{item.navName}}</span>
             </template>
-              <el-menu-item :index="item2.path" v-for="item2 in item.list" :key="item2.id" @click="savaNav(item2.path)">
+              <el-menu-item :index="item2.path" v-for="item2 in item.list" :key="item2.id" @click="savaNav(item2.path)" >
                 <template slot="title">
-                  <i class="el-icon-menu"></i>
-                  <span>{{item2.navName}}</span>
+                  <i @click="savaNav(item2.path)" class="el-icon-menu"></i>
+                  <span @click="savaNav(item2.path)">{{item2.navName}}</span>
                 </template>
               </el-menu-item>
           </el-submenu>
+<!--          <el-menu-item :index="item.path" v-for="item in menulist" :key="item.path">-->
+<!--            <i :class="iclist[item.id]"></i>-->
+<!--            <span>{{item.navName}}</span>-->
+<!--          </el-menu-item>-->
         </el-menu>
       </el-aside>
       <el-main>
@@ -68,14 +71,20 @@ export default {
     async getMenuList () {
       const { data: res } = await this.$http.get('/nav/getNav')
       if (res.code !== 20000) return this.$message.error(res.msg)
+      for (const resKey in res.data) {
+        if (res.data[resKey].list.length === 0) {
+          delete res.data[resKey].list
+        }
+      }
       this.menulist = res.data
     },
     toggleC () {
       this.isColl = !this.isColl
     },
     savaNav (activePath) {
-      window.sessionStorage.setItem('activePath', activePath)
-      this.activePath = activePath
+      // window.sessionStorage.setItem('activePath', activePath)
+      // this.activePath = activePath
+      this.$router.push(activePath)
     }
   }
 }
@@ -119,3 +128,4 @@ export default {
   cursor: pointer;
 }
 </style>
+<!--          :default-active="activePath"-->
