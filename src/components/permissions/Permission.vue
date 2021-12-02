@@ -20,13 +20,6 @@
                         @close="removePermission(scope.row,item1.pid)">{{ item1.name }}
                 </el-tag>
               </el-col>
-              <!--              <el-col :span="14">-->
-              <!--                <el-row>-->
-              <!--                  <el-col>-->
-              <!--                    <el-tag closable @close="removePermission(scope.row,item2.pcid)" v-for="(item2) in item1.queryChildrePermission" :key="item2.pcId" type="success">{{item2.name}}</el-tag>-->
-              <!--                  </el-col>-->
-              <!--                </el-row>-->
-              <!--              </el-col>-->
             </el-row>
           </template>
         </el-table-column>
@@ -43,9 +36,10 @@
         </el-table-column>
       </el-table>
     </el-card>
-    <el-dialog title="分配权限" :visible.sync="setPermissionDialogVisible" width="51%" center>
+
+    <el-dialog title="分配权限" :visible.sync="setPermissionDialogVisible">
       <template>
-        <el-transfer :titles="['未分配的权限', '已获得的权限']" :button-texts="['减权限', '加权限']" v-model="value" :format="{
+        <el-transfer  :titles="['未分配的权限', '已获得的权限']" :button-texts="['减权限', '加权限']" v-model="value"  @change="changeRoleDialogClosed" :format="{
         noChecked: '${total}',
         hasChecked: '${checked}/${total}'
       }" :data="permissionTransferdata"
@@ -56,11 +50,8 @@
         >
         </el-transfer>
       </template>
-      <span slot="footer" class="dialog-footer">
-    <el-button @click="setPermissionDialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="submitPermission">确 定</el-button>
-    </span>
     </el-dialog>
+
     <!--    编辑角色-->
     <el-dialog
       title="编辑角色"
@@ -145,9 +136,15 @@ export default {
     this.generateData()
   },
   methods: {
-    addRoleDialogClosed () {
-      this.$refs.addFormRef.resetFields()
-      this.addRoledialogVisible = false
+    // 修改transfer右边菜单触发事件
+    async changeRoleDialogClosed () {
+      const { data: res } = await this.$http.post('/rp/addRP', {
+        rid: this.RoleId,
+        pid: this.value
+      })
+      if (res.code !== 20000) {
+
+      }
     },
     Rolededit (role) {
       this.$refs.editFormRef.validate(async vaild => {
@@ -196,9 +193,12 @@ export default {
       this.permissionslist()
       this.$message.success('权限删除成功')
     },
-    showPermissionDialog (rid) {
+    async showPermissionDialog (rid) {
       this.RoleId = rid
       this.setPermissionDialogVisible = true
+      const { data: res } = await this.$http.get('/role/getRolePermissions', { params: { rid: rid } })
+      if (res.code !== 20000) return this.$message.error('获取指定角色的权限列表失败')
+      this.value = res.data
     },
     async editRoleDialog (row) {
       const { data: res } = await this.$http.get('/role/getRole', { params: { rid: row.rid } })
@@ -238,12 +238,13 @@ export default {
     showAddRoleDialog () {
       this.addRoledialogVisible = true
     },
+    addRoleDialogClosed () {
+      this.addRoledialogVisible = false
+      this.$refs.addFormRef.resetFields()
+    },
     async submitPermission () {
       this.setPermissionDialogVisible = false
-      const { data: res } = await this.$http.post('/rp/addRP', {
-        rid: this.RoleId,
-        pid: this.value
-      })
+
       console.log(res)
     }
   }
@@ -269,5 +270,11 @@ export default {
   image {
     size: 5px;
   }
+}
+.perdialog {
+  position: absolute;
+  left: 50%;
+  width: 100%;
+  transform: translate(-50%,-50%);
 }
 </style>
