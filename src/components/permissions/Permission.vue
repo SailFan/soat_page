@@ -145,6 +145,7 @@ export default {
       if (res.code !== 20000) return this.$message.error('分配权限失败')
       this.$message.success('角色权限关联成功')
       this.permissionslist()
+      console.log(this.value)
     },
     Rolededit (role) {
       this.$refs.editFormRef.validate(async vaild => {
@@ -274,5 +275,8 @@ export default {
   left: 50%;
   width: 100%;
   transform: translate(-50%,-50%);
+}
+.el-transfer__buttons :nth-child(2) {
+  pointer-events: none;
 }
 </style>
