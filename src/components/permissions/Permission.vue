@@ -142,9 +142,9 @@ export default {
         rid: this.RoleId,
         pid: this.value
       })
-      if (res.code !== 20000) {
-
-      }
+      if (res.code !== 20000) return this.$message.error('分配权限失败')
+      this.$message.success('角色权限关联成功')
+      this.permissionslist()
     },
     Rolededit (role) {
       this.$refs.editFormRef.validate(async vaild => {
@@ -244,8 +244,6 @@ export default {
     },
     async submitPermission () {
       this.setPermissionDialogVisible = false
-
-      console.log(res)
     }
   }
 }

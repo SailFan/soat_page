@@ -82,9 +82,9 @@ export default {
       this.isColl = !this.isColl
     },
     savaNav (activePath) {
-      // window.sessionStorage.setItem('activePath', activePath)
-      // this.activePath = activePath
-      this.$router.push(activePath)
+      window.sessionStorage.setItem('activePath', activePath)
+      this.activePath = activePath
+      // this.$router.push(activePath)
     }
   }
 }

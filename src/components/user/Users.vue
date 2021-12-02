@@ -40,7 +40,7 @@
               <el-button type="danger" icon="el-icon-delete" size="small" @click="removeUserById(scope.row.id)"></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="角色" placement="top">
-              <el-button type="warning" icon="el-icon-setting" size="small"></el-button>
+              <el-button type="warning" icon="el-icon-setting" size="small" @click="openAssignRole(scope.row.id)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -103,6 +103,19 @@
     <el-button type="primary"  @click="editUserInfo">确 定</el-button>
   </span>
     </el-dialog>
+
+<!--    分配角色dialog-->
+    <el-dialog
+      title="分配角色"
+      :visible.sync="assignRoleDialogVisible"
+      width="30%"
+      :before-close="handleClose">
+      <span>这是一段信息</span>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="assignRoleDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="assignRoleDialogVisible = false">确 定</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -136,6 +149,7 @@ export default {
       total: 0,
       editDialogVisible: false,
       userVisible: false,
+      assignRoleDialogVisible: false,
       addForm: {
         username: '',
         password: '',
@@ -264,6 +278,9 @@ export default {
       if (res.code !== 20000) return this.$message.error('删除用户失败')
       this.$message.success('删除用户成功')
       this.getUserList()
+    },
+    openAssignRole (uid) {
+      this.assignRoleDialogVisible = true
     }
   }
 }
