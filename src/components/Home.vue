@@ -30,10 +30,6 @@
                 </template>
               </el-menu-item>
           </el-submenu>
-<!--          <el-menu-item :index="item.path" v-for="item in menulist" :key="item.path">-->
-<!--            <i :class="iclist[item.id]"></i>-->
-<!--            <span>{{item.navName}}</span>-->
-<!--          </el-menu-item>-->
         </el-menu>
       </el-aside>
       <el-main>
@@ -82,9 +78,9 @@ export default {
       this.isColl = !this.isColl
     },
     savaNav (activePath) {
-      // window.sessionStorage.setItem('activePath', activePath)
-      // this.activePath = activePath
-      this.$router.push(activePath)
+      window.sessionStorage.setItem('activePath', activePath)
+      this.activePath = activePath
+      // this.$router.push(activePath)
     }
   }
 }
