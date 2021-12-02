@@ -40,7 +40,7 @@
               <el-button type="danger" icon="el-icon-delete" size="small" @click="removeUserById(scope.row.id)"></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="角色" placement="top">
-              <el-button type="warning" icon="el-icon-setting" size="small"></el-button>
+              <el-button type="warning" icon="el-icon-setting" size="small" @click="openAssignRole(scope.row.id)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -103,6 +103,24 @@
     <el-button type="primary"  @click="editUserInfo">确 定</el-button>
   </span>
     </el-dialog>
+
+<!--    分配角色dialog-->
+    <el-dialog
+      title="分配角色"
+      :visible.sync="assignRoleDialogVisible"
+      width="30%"
+    >
+      <el-form :model="editRoleForm"  label-width="70px" :rules="editRoleFormRules" ref="editROleFormRef">
+          <el-form-item label="角色列表" rop="roleName">
+            <el-select placeholder="请选择角色" v-model="editRoleForm.roleName">
+            </el-select>
+          </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="assignRoleDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="assignRoleDialogVisible = false">确 定</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -136,6 +154,7 @@ export default {
       total: 0,
       editDialogVisible: false,
       userVisible: false,
+      assignRoleDialogVisible: false,
       addForm: {
         username: '',
         password: '',
@@ -143,6 +162,18 @@ export default {
         email: '',
         phone: ''
 
+      },
+      editRoleForm: {
+        rid: '',
+        roleName: '',
+        roleTag: ''
+
+      },
+      editRoleFormRules: {
+        roleName: [
+          { roleName: true, message: '请输入角色名称', trigger: 'blur' },
+          { min: 1, max: 10, message: '角色名1到10位' }
+        ]
       },
       addFormRules: {
         username: [
@@ -264,6 +295,15 @@ export default {
       if (res.code !== 20000) return this.$message.error('删除用户失败')
       this.$message.success('删除用户成功')
       this.getUserList()
+    },
+    openAssignRole (uid) {
+      this.assignRoleDialogVisible = true
+      this.getRoleList()
+    },
+    async getRoleList () {
+      const { data: res } = await this.$http.get('/role/getRoleList')
+      if (res.code !== 20000) return this.$message.error('获取角色列表失败')
+      this.editRoleForm = res.data
     }
   }
 }
