@@ -110,15 +110,19 @@
       :visible.sync="assignRoleDialogVisible"
       width="30%"
     >
-      <el-form :model="editRoleForm"  label-width="70px" :rules="editRoleFormRules" ref="editROleFormRef">
-          <el-form-item label="角色列表" rop="roleName">
-            <el-select placeholder="请选择角色" v-model="editRoleForm.roleName">
-            </el-select>
-          </el-form-item>
-      </el-form>
+<!--      <span>当前角色为{{editRoleForm}}</span>-->
+      <el-select v-model="selectValue" placeholder="请选择">
+        <el-option
+          v-for="item in editRoleForm"
+          :key="item.rid"
+          :label="item.roleName"
+          :value="item.rid">
+        </el-option>
+      </el-select>
+
       <span slot="footer" class="dialog-footer">
     <el-button @click="assignRoleDialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="assignRoleDialogVisible = false">确 定</el-button>
+    <el-button type="primary" @click="assignRoleDialogClose">确 定</el-button>
   </span>
     </el-dialog>
   </div>
@@ -144,12 +148,15 @@ export default {
     }
 
     return {
+      selectValue: '',
+      currentRole: '',
       editForm: {},
       queryInfo: {
         query: '',
         pagesize: 10,
         pagenum: 1
       },
+      userID: '',
       userlist: [],
       total: 0,
       editDialogVisible: false,
@@ -225,6 +232,14 @@ export default {
     this.getUserList()
   },
   methods: {
+    async assignRoleDialogClose () {
+      console.log(this.selectValue)
+      this.assignRoleDialogVisible = false
+      const { data: res } = await this.$http.post('/ur/adelUR', {})
+      console.log(this.userID)
+      console.log(this.selectValue)
+      if (res.code !== 20000) return this.$message.error('角色和用户建立关联关系失败')
+    },
     async getUserList () {
       const { data: res } = await this.$http.get('/auth/getUser', { params: this.queryInfo })
       if (res.code !== 20000) return this.$message.error('获取用户列表失败')
@@ -299,12 +314,16 @@ export default {
     openAssignRole (uid) {
       this.assignRoleDialogVisible = true
       this.getRoleList()
+      this.userID = uid
     },
     async getRoleList () {
       const { data: res } = await this.$http.get('/role/getRoleList')
       if (res.code !== 20000) return this.$message.error('获取角色列表失败')
       this.editRoleForm = res.data
     }
+    // getUserCurrentRole() {
+    //   this.$http.get('/auth/getUserDetail')
+    // }
   }
 }
 
