@@ -31,7 +31,7 @@
             </el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="操作" >
+        <el-table-column label="操作" width="200px">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="编辑"  placement="top">
               <el-button type="primary" icon="el-icon-edit" size="small" @click="showEditDialog(scope.row.id)"></el-button>
@@ -110,7 +110,6 @@
       :visible.sync="assignRoleDialogVisible"
       width="30%"
     >
-<!--      <span>当前角色为{{editRoleForm}}</span>-->
       <el-select v-model="selectValue" placeholder="请选择">
         <el-option
           v-for="item in editRoleForm"
@@ -148,7 +147,10 @@ export default {
 
     return {
       selectValue: '',
-      currentRole: '',
+      currentRole: {
+        id: '',
+        role: ''
+      },
       editForm: {},
       queryInfo: {
         query: '',
@@ -232,12 +234,12 @@ export default {
   },
   methods: {
     async assignRoleDialogClose () {
-      console.log(this.selectValue)
       this.assignRoleDialogVisible = false
-      const { data: res } = await this.$http.post('/ur/adelUR', {})
-      console.log(this.userID)
-      console.log(this.selectValue)
+      const { data: res } = await this.$http.get('/ur/addUR', { params: { uId: this.userID, rId: this.selectValue } })
       if (res.code !== 20000) return this.$message.error('角色和用户建立关联关系失败')
+      // this.getUserCurrentRole()
+      this.getUserList()
+      this.$message.success('修改角色成功')
     },
     async getUserList () {
       const { data: res } = await this.$http.get('/auth/getUser', { params: this.queryInfo })
@@ -314,14 +316,19 @@ export default {
       this.assignRoleDialogVisible = true
       this.getRoleList()
       this.userID = uid
+      // this.getUserCurrentRole(uid)
     },
     async getRoleList () {
       const { data: res } = await this.$http.get('/role/getRoleList')
       if (res.code !== 20000) return this.$message.error('获取角色列表失败')
       this.editRoleForm = res.data
     }
-    // getUserCurrentRole() {
-    //   this.$http.get('/auth/getUserDetail')
+    // async getUserCurrentRole (uid) {
+    //   const { res: data } = await this.$http.get('/ur/getCurrentRole', { params: { uId: uid } })
+    //   this.currentRole.role = data
+    //   this.currentRole.id = uid
+    //   const { data: re } = await this.$http.post('/auth/modificationUser', this.currentRole)
+    //   if (re.code !== 20000) return this.$message.error('更新失败')
     // }
   }
 }
