@@ -111,6 +111,11 @@
       width="30%"
     >
       <el-form :model="editRoleForm"  label-width="70px" :rules="editRoleFormRules" ref="editROleFormRef">
+        <div>
+          <p>当前的用户</p>
+          <p>当前的角色</p>
+          <p></p>
+        </div>
           <el-form-item label="角色列表" rop="roleName">
             <el-select placeholder="请选择角色" v-model="editRoleForm.roleName">
             </el-select>
