@@ -22,19 +22,16 @@
                   <el-option label="区域二" value="beijing"></el-option>
                 </el-select>
               </el-form-item>
-
               <el-form-item label="接口路径" label-width="80px">
-                <el-input placeholder="请输入内容" class="input-with-select">
+                <el-input placeholder="请输入接口路径" class="input-with-select">
                   <el-select  v-model="select" slot="prepend" placeholder="请选择">
                     <el-option label="GET" value="1"></el-option>
                     <el-option label="POST" value="2"></el-option>
                     <el-option label="PUT" value="3"></el-option>
                     <el-option label="DELETE" value="4"></el-option>
                   </el-select>
-                  <el-button slot="append" icon="el-icon-search"></el-button>
                 </el-input>
-              </el-form-item>
-
+                </el-form-item>
             </el-form>
             </div>
             <h1 style="font-weight: lighter">请求参数设置</h1>
