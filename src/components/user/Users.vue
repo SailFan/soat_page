@@ -237,7 +237,7 @@ export default {
       this.assignRoleDialogVisible = false
       const { data: res } = await this.$http.get('/ur/addUR', { params: { uId: this.userID, rId: this.selectValue } })
       if (res.code !== 20000) return this.$message.error('角色和用户建立关联关系失败')
-      // this.getUserCurrentRole()
+      this.getUserCurrentRole(this.userID)
       this.getUserList()
       this.$message.success('修改角色成功')
     },
@@ -322,14 +322,15 @@ export default {
       const { data: res } = await this.$http.get('/role/getRoleList')
       if (res.code !== 20000) return this.$message.error('获取角色列表失败')
       this.editRoleForm = res.data
+    },
+    async getUserCurrentRole (uid) {
+      const { data: res } = await this.$http.get('/role/getRole', { params: { id: uid } })
+      console.log(res.data)
+      this.currentRole.role = res.data.roleName
+      this.currentRole.id = uid
+      const { data: re } = await this.$http.post('/auth/modificationUser', this.currentRole)
+      if (re.code !== 20000) return this.$message.error('更新失败')
     }
-    // async getUserCurrentRole (uid) {
-    //   const { res: data } = await this.$http.get('/ur/getCurrentRole', { params: { uId: uid } })
-    //   this.currentRole.role = data
-    //   this.currentRole.id = uid
-    //   const { data: re } = await this.$http.post('/auth/modificationUser', this.currentRole)
-    //   if (re.code !== 20000) return this.$message.error('更新失败')
-    // }
   }
 }
 

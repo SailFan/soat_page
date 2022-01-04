@@ -7,6 +7,8 @@ import Users from '@/components/user/Users'
 import Permission from '@/components/permissions/Permission'
 import Accounts from '@/components/resources/Accounts'
 import Devices from '@/components/resources/Devices'
+import InterfaceManagement from '@/components/interfaces/InterfaceManagement'
+import InterfaceDetail from '@/components/interfaces/InterfaceDetail'
 import '../assets/css/global.css'
 
 Vue.use(VueRouter)
@@ -20,8 +22,10 @@ const routes = [
     redirect: '/statement',
     children: [
       { path: '/statement', component: Statement },
+      { path: '/iManagement', component: InterfaceManagement },
       { path: '/permission', component: Permission },
       { path: '/accounts', component: Accounts },
+      { path: '/interfaceDetail', component: InterfaceDetail },
       { path: '/devices', component: Devices },
       { path: '/users', component: Users }]
   }
