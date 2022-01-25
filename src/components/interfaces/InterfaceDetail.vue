@@ -5,24 +5,21 @@
       <el-breadcrumb-item>测试集</el-breadcrumb-item>
       <el-breadcrumb-item>接口详情</el-breadcrumb-item>
     </el-breadcrumb>
-<!--    <el-card>-->
+    <el-card>
       <template>
-        <el-tabs v-model="activeName" @tab-click="handleClick" type="border-card">
-          <el-tab-pane label="预览" name="first">预览111</el-tab-pane>
-          <el-tab-pane label="编辑" name="second">
-            <h1 style="font-weight: lighter">基本设置</h1>
+            <h1 style="font-weight: lighter">请求</h1>
             <div class="base">
-            <el-form>
-              <el-form-item label="活动名称" label-width="80px">
-                <el-input></el-input>
+            <el-form :rules="editBaseSettingFormRules">
+              <el-form-item label="接口名称" label-width="80px" prop="interfaceName">
+                <el-input placeholder="请输入接口名称"></el-input>
               </el-form-item>
-              <el-form-item label="选择分类" label-width="80px">
+              <el-form-item label="选择分类" label-width="80px" prop="interfaceType">
                 <el-select placeholder="请选择分类">
                   <el-option label="区域一" value="shanghai"></el-option>
                   <el-option label="区域二" value="beijing"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="接口路径" label-width="80px">
+              <el-form-item label="接口路径" label-width="80px" prop="interfacePath">
                 <el-input placeholder="请输入接口路径" class="input-with-select">
                   <el-select  v-model="select" slot="prepend" placeholder="请选择">
                     <el-option label="GET" value="1"></el-option>
@@ -31,38 +28,21 @@
                     <el-option label="DELETE" value="4"></el-option>
                   </el-select>
                 </el-input>
-                </el-form-item>
+              </el-form-item>
+                <el-tabs style="padding-top: 20px">
+                  <el-tab-pane label="参数" name="first">
+                      <el-form-item>
+                      </el-form-item>
+                  </el-tab-pane>
+                  <el-tab-pane label="头信息" name="second">头信息</el-tab-pane>
+                  <el-tab-pane label="请求体" name="third">请求体</el-tab-pane>
+                  <el-tab-pane label="测试" name="fourth">测试</el-tab-pane>
+                </el-tabs>
+
             </el-form>
-            </div>
-            <h1 style="font-weight: lighter">请求参数设置</h1>
-            <div class="base">
-              <el-form>
-                <el-form-item label="活动名称">
-                  <el-input></el-input>
-                </el-form-item>
-              </el-form>
-            </div>
-            <h1 style="font-weight: lighter">返回数据设置</h1>
-            <div class="base">
-              <el-form>
-                <el-form-item label="活动名称">
-                  <el-input></el-input>
-                </el-form-item>
-              </el-form>
-            </div>
-            <h1 style="font-weight: lighter">其他</h1>
-            <div class="base">
-              <el-form>
-                <el-form-item label="活动名称">
-                  <el-input></el-input>
-                </el-form-item>
-              </el-form>
-            </div>
-          </el-tab-pane>
-          <el-tab-pane label="运行" name="third">角色管理</el-tab-pane>
-        </el-tabs>
+        </div>
       </template>
-<!--    </el-card>-->
+    </el-card>
   </div>
 </template>
 
@@ -71,7 +51,30 @@ export default {
   data () {
     return {
       activeName: 'first',
-      select: ''
+      select: '',
+      editBaseSettingFormRules: {
+        interfaceName: [
+          {
+            required: true,
+            message: '请输入接口名称',
+            trigger: 'blur'
+          }
+        ],
+        interfaceType: [
+          {
+            required: true,
+            message: '请选择接口分类',
+            trigger: 'blur'
+          }
+        ],
+        interfacePath: [
+          {
+            required: true,
+            message: '请输入接口路径',
+            trigger: 'blur'
+          }
+        ]
+      }
     }
   },
   methods: {
