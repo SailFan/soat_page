@@ -9,26 +9,28 @@
       <template>
             <h1 style="font-weight: lighter">请求</h1>
             <div class="base">
-            <el-form :rules="editBaseSettingFormRules">
+            <el-form :rules="editBaseSettingFormRules" ref="baseInterfaceFormRef" :model="baseInterfaceFormModel">
               <el-form-item label="接口名称" label-width="80px" prop="interfaceName">
-                <el-input placeholder="请输入接口名称"></el-input>
+                <el-input placeholder="请输入接口名称" v-model="baseInterfaceFormModel.interfaceName"></el-input>
               </el-form-item>
               <el-form-item label="选择分类" label-width="80px" prop="interfaceType">
-                <el-select placeholder="请选择分类">
+                <el-select placeholder="请选择分类" v-model="baseInterfaceFormModel.region">
                   <el-option label="区域一" value="shanghai"></el-option>
                   <el-option label="区域二" value="beijing"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="接口路径" label-width="80px" prop="interfacePath">
-                <el-input placeholder="请输入接口路径" class="input-with-select">
-                  <el-select  v-model="select" slot="prepend" placeholder="请选择">
-                    <el-option label="GET" value="1"></el-option>
-                    <el-option label="POST" value="2"></el-option>
-                    <el-option label="PUT" value="3"></el-option>
-                    <el-option label="DELETE" value="4"></el-option>
-                  </el-select>
-                </el-input>
+                <el-input placeholder="请输入请求地址" v-model="baseInterfaceFormModel.path" class="input-with-select">
+                <el-select v-model="select" slot="prepend" placeholder="请选择" style="width: 100px">
+                  <el-option label="GET" value="1"></el-option>
+                  <el-option label="POST" value="2"></el-option>
+                  <el-option label="PUT" value="3"></el-option>
+                  <el-option label="DELETE" value="4"></el-option>
+                </el-select>
+                  <el-button slot="append" @click="savaInterfaceData">保存</el-button>
+              </el-input>
               </el-form-item>
+            </el-form>
                 <el-tabs style="padding-top: 20px">
                   <el-tab-pane label="参数" name="first">
                       <el-form-item>
@@ -38,8 +40,6 @@
                   <el-tab-pane label="请求体" name="third">请求体</el-tab-pane>
                   <el-tab-pane label="测试" name="fourth">测试</el-tab-pane>
                 </el-tabs>
-
-            </el-form>
         </div>
       </template>
     </el-card>
@@ -50,6 +50,11 @@
 export default {
   data () {
     return {
+      baseInterfaceFormModel: {
+        interfaceName: '',
+        region: '',
+        path: ''
+      },
       activeName: 'first',
       select: '',
       editBaseSettingFormRules: {
@@ -78,6 +83,10 @@ export default {
     }
   },
   methods: {
+    savaInterfaceData () {
+      this.$refs.baseInterfaceFormRef.validate(async (valid) => {
+      })
+    }
   }
 }
 </script>
