@@ -42,10 +42,8 @@
       required: true, message: '域名不能为空', trigger: 'blur'
     }"
                       >
-                        <el-input v-model="domain.value" style="width: 95%">
-                          <div slot="prepend" id="test1">
-                            <el-input  placeholder="请输入" style="width: 400px" ></el-input>
-                          </div>
+                        <el-input v-model="domain.value" style="width: 95%" placeholder="请输入value" >
+                            <el-input  placeholder="请输入key" style="width: 400px" slot="prepend"></el-input>
                         </el-input>
                         <el-button @click.prevent="removeDomain(domain)">删除</el-button>
                       </el-form-item>
@@ -127,7 +125,10 @@ export default {
   background: rgba(40%,40%,40%,0.09);
   padding: 15px;
 }
- #test1  {
+</style>
+
+<style>
+.el-input-group__prepend {
   padding: inherit;
 }
 </style>
