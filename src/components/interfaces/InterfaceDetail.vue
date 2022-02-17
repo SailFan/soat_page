@@ -32,29 +32,114 @@
               </el-form-item>
             </el-form>
                 <el-tabs style="padding-top: 20px">
-                  <el-tab-pane label="参数" name="first">
-                    <el-form :model="dynamicValidateForm" ref="dynamicValidateForm">
-                      <el-form-item
-                        v-for="(domain, index) in dynamicValidateForm.domains"
-                        :key="domain.key"
-                        :prop="'domains.' + index + '.value'"
-                        :rules="{
-      required: true, message: '域名不能为空', trigger: 'blur'
-    }"
-                      >
-                        <el-input v-model="domain.value" style="width: 95%" placeholder="请输入value" >
-                            <el-input  placeholder="请输入key" style="width: 400px" slot="prepend"></el-input>
-                        </el-input>
-                        <el-button @click.prevent="removeDomain(domain)">删除</el-button>
-                      </el-form-item>
-                      <el-form-item>
-                        <el-button @click="addDomain">新增域名</el-button>
-                      </el-form-item>
+                  <el-tab-pane label="Params" name="first">
+                    <el-form ref="formInline" class="demo-form-inline" label-position="right" label-width='20px'>
+                      <div>
+                        <el-button size="mini" type="text" icon="el-icon-plus" @click="addExtraInput">Query Params</el-button>
+                        <el-popover
+                          placement="top-start"
+                          title=""
+                          width="500"
+                          trigger="hover">
+                          <el-alert
+                            title="参数操作指南"
+                            type="info"
+                            :closable="false">
+                            <template slot='title'>
+                              请根据不同的请求类型,填写不同格式的数据，需要自己做判断，我这个半吊子水前端做不了这些！！
+                            </template>
+                          </el-alert>
+                          <i slot="reference" style="margin-left: 5px" class="el-icon-info"></i>
+                        </el-popover>
+                      </div>
+                      <div v-if="extraList && extraList.length > 0">
+                        <el-alert title="" type="info" :closable="false" :show-icon="false">
+                          <template slot='title'>
+                            <div v-for="(item,index) in extraList" :key="index">
+                              <el-row>
+                                <el-col :span="5">
+                              <el-form-item
+                                :rules="[
+      { required: true, message: '请输入key', trigger: 'blur' }
+    ]">
+                                <el-input v-model="item.key" placeholder="key"></el-input>
+                              </el-form-item>
+                                </el-col>
+                                <el-col :span="15">
+                              <el-form-item
+                                :rules="[
+      { required: true, message: '请输入value值', trigger: 'blur' }
+    ]">
+                                <el-input  v-model="item.value" placeholder="value"></el-input>
+                              </el-form-item>
+                                </el-col>
+                                <el-col :span="4" >
+                              <el-button type="text" icon="el-icon-delete" style="color: #F56C6C; margin-left: 20px"
+                                         @click="delExtraInput(index)">delete
+                              </el-button>
+                                </el-col>
+                              </el-row>
+                            </div>
+                          </template>
+                        </el-alert>
+                      </div>
                     </el-form>
                   </el-tab-pane>
-                  <el-tab-pane label="头信息" name="second">头信息</el-tab-pane>
-                  <el-tab-pane label="请求体" name="third">请求体</el-tab-pane>
-                  <el-tab-pane label="测试" name="fourth">测试</el-tab-pane>
+                  <el-tab-pane label="Headers" name="second">
+                    <el-form ref="formInline" class="demo-form-inline" label-position="right" label-width='20px'>
+                      <div>
+                        <el-button size="mini" type="text" icon="el-icon-plus" @click="addExtraHeadInput">Headers</el-button>
+                        <el-popover
+                          placement="top-start"
+                          title=""
+                          width="500"
+                          trigger="hover">
+                          <el-alert
+                            title="参数操作指南"
+                            type="info"
+                            :closable="false">
+                            <template slot='title'>
+                              请根据不同的请求类型,填写不同格式的数据，需要自己做判断，我这个半吊子水前端做不了这些！！
+                            </template>
+                          </el-alert>
+                          <i slot="reference" style="margin-left: 5px" class="el-icon-info"></i>
+                        </el-popover>
+                      </div>
+                      <div v-if="extraHeadList && extraHeadList.length > 0">
+                        <el-alert title="" type="info" :closable="false" :show-icon="false">
+                          <template slot='title'>
+                            <div v-for="(item,index) in extraHeadList" :key="index">
+                              <el-row>
+                                <el-col :span="5">
+                                  <el-form-item
+                                    :rules="[
+      { required: true, message: '请输入key', trigger: 'blur' }
+    ]">
+                                    <el-input v-model="item.key" placeholder="key"></el-input>
+                                  </el-form-item>
+                                </el-col>
+                                <el-col :span="15">
+                                  <el-form-item
+                                    :rules="[
+      { required: true, message: '请输入value值', trigger: 'blur' }
+    ]">
+                                    <el-input  v-model="item.value" placeholder="value"></el-input>
+                                  </el-form-item>
+                                </el-col>
+                                <el-col :span="4" >
+                                  <el-button type="text" icon="el-icon-delete" style="color: #F56C6C; margin-left: 20px"
+                                             @click="delExtraHeadInput(index)">delete
+                                  </el-button>
+                                </el-col>
+                              </el-row>
+                            </div>
+                          </template>
+                        </el-alert>
+                      </div>
+                    </el-form>
+                  </el-tab-pane>
+                  <el-tab-pane label="Body" name="third">请求体</el-tab-pane>
+                  <el-tab-pane label="Test" name="fourth">测试</el-tab-pane>
                 </el-tabs>
         </div>
       </template>
@@ -66,11 +151,18 @@
 export default {
   data () {
     return {
-      dynamicValidateForm: {
-        domains: [{
+      extraList: [
+        {
+          key: '',
           value: ''
-        }]
-      },
+        }
+      ],
+      extraHeadList: [
+        {
+          key: '',
+          value: ''
+        }
+      ],
       baseInterfaceFormModel: {
         interfaceName: '',
         region: '',
@@ -108,11 +200,23 @@ export default {
       this.$refs.baseInterfaceFormRef.validate(async (valid) => {
       })
     },
-    addDomain () {
-      this.dynamicValidateForm.domains.push({
-        value: '',
-        key: Date.now()
+    addExtraInput () {
+      this.extraList.push({
+        key: '',
+        value: ''
       })
+    },
+    addExtraHeadInput () {
+      this.extraHeadList.push({
+        key: '',
+        value: ''
+      })
+    },
+    delExtraInput (index) {
+      this.extraList.splice(index, 1)
+    },
+    delExtraHeadInput (index) {
+      this.extraHeadList.splice(index, 1)
     }
   }
 }
@@ -125,10 +229,11 @@ export default {
   background: rgba(40%,40%,40%,0.09);
   padding: 15px;
 }
-</style>
 
-<style>
-.el-input-group__prepend {
+input .el-input-group__prepend {
   padding: inherit;
+}
+/deep/ .el-alert__content {
+  width: 100%;
 }
 </style>
