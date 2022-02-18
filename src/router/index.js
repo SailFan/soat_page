@@ -7,6 +7,7 @@ import Users from '@/components/user/Users'
 import Permission from '@/components/permissions/Permission'
 import Accounts from '@/components/resources/Accounts'
 import Devices from '@/components/resources/Devices'
+import Project from '@/components/projects/Project'
 import InterfaceManagement from '@/components/interfaces/InterfaceManagement'
 import InterfaceDetail from '@/components/interfaces/InterfaceDetail'
 import '../assets/css/global.css'
@@ -22,6 +23,7 @@ const routes = [
     redirect: '/statement',
     children: [
       { path: '/statement', component: Statement },
+      { path: '/project', component: Project },
       { path: '/iManagement', component: InterfaceManagement },
       { path: '/permission', component: Permission },
       { path: '/accounts', component: Accounts },
