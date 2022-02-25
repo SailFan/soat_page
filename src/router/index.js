@@ -11,8 +11,10 @@ import Project from '@/components/projects/Project'
 import InterfaceManagement from '@/components/interfaces/InterfaceManagement'
 import InterfaceDetail from '@/components/interfaces/InterfaceDetail'
 import '../assets/css/global.css'
+import moment from 'moment'
 
 Vue.use(VueRouter)
+Vue.use(moment)
 
 const routes = [
   { path: '/', redirect: '/login' },

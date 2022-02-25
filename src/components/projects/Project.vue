@@ -11,8 +11,7 @@
         <el-dialog
           title="新增测试集合"
           :visible.sync="projectDialogVisible"
-          width="40%"
-          :before-close="handleClose">
+          width="40%">
           <el-form ref="addProjectFormRef" :model="addProjectFormMode" label-width="80px" :rules="projectformRules">
             <el-form-item label="名称" prop="projectName">
               <el-input v-model="addProjectFormMode.projectName" placeholder="请输入测试集名称"></el-input>
@@ -133,29 +132,35 @@
         stripe
         style="width: 100%">
         <el-table-column type="index" label="#"></el-table-column>
-        <el-table-column prop="projectName" label="接口名称"></el-table-column>
+        <el-table-column prop="projectName" label="测试集名称"></el-table-column>
         <el-table-column prop="basePath" label="基础路劲"></el-table-column>
-        <el-table-column prop="projectType" label="是否私有"></el-table-column>
-        <el-table-column prop="addTime" label="创建时间"></el-table-column>
-        <el-table-column prop="upTime" label="更新时间"></el-table-column>
-        <el-table-column prop="env" label="环境"></el-table-column>
-        <el-table-column prop="tag" label="标签"></el-table-column>
+        <el-table-column prop="projectType" label="是否私有" :formatter="formatType"></el-table-column>
+        <el-table-column prop="addTime" label="创建时间" :formatter="formatDate"></el-table-column>
+        <el-table-column prop="upTime" label="更新时间" :formatter="formatDate"></el-table-column>
         <el-table-column>
-          <template>
+          <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="编辑"  placement="top">
               <el-button type="primary" icon="el-icon-edit" size="small"></el-button>
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="删除" placement="top">
+            <el-tooltip class="item" effect="dark" content="删除" placement="top" @click="delOneProject(scope.row)">
               <el-button type="danger" icon="el-icon-delete" size="small"></el-button>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="接口" placement="top">
+              <el-button type="info" icon="el-icon-s-fold" size="small"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="queryInfo.currentPage" :page-sizes="[2,4,10,20]" :page-size="queryInfo.pageSize"
+                     layout="total,prev, pager, next, sizes, jumper" :total="total">
+      </el-pagination>
     </el-card>
     </div>
 </template>
 
 <script>
+
+import moment from 'moment'
 
 export default {
   data () {
@@ -166,9 +171,6 @@ export default {
         query: 2,
         pageSize: 5,
         currentPage: 1
-      },
-      tableProjectData: {
-
       },
       envList: [
         {
@@ -182,6 +184,7 @@ export default {
           value: ''
         }
       ],
+      total: '',
       projectDialogVisible: false,
       addProjectFormMode: {
         projectName: '',
@@ -203,11 +206,30 @@ export default {
     this.getAllProject()
   },
   methods: {
+    delOneProject (row) {
+      console.log(row)
+    },
+    handleSizeChange (newSize) {
+      this.queryInfo.pageSize = newSize
+      this.getAllProject()
+    },
+    handleCurrentChange (newPage) {
+      this.queryInfo.currentPage = newPage
+      this.getAllProject()
+    },
+    formatDate (row, column) {
+      var date = row[column.property]
+      if (date === undefined) { return '' }
+      return moment(date).format('YYYY-MM-DD HH:mm:ss')
+    },
+    formatType (row, column) {
+      return row.projectType === true ? '是' : row.projectType === false ? '否' : '未设置'
+    },
     async getAllProject () {
       const { data: res } = await this.$http.get('/project/queryProject', { params: this.queryInfo })
       if (res.code !== 20000) return this.$message.error('获取测试集失败')
       this.projectList = res.data.projects
-      this.total = res.total
+      this.total = res.data.total
     },
     submitProjectData () {
       this.$refs.addProjectFormRef.validate(async (valid) => {
