@@ -128,6 +128,29 @@
   </span>
         </el-dialog>
       </el-row>
+      <el-table
+        :data="projectList"
+        stripe
+        style="width: 100%">
+        <el-table-column type="index" label="#"></el-table-column>
+        <el-table-column prop="projectName" label="接口名称"></el-table-column>
+        <el-table-column prop="basePath" label="基础路劲"></el-table-column>
+        <el-table-column prop="projectType" label="是否私有"></el-table-column>
+        <el-table-column prop="addTime" label="创建时间"></el-table-column>
+        <el-table-column prop="upTime" label="更新时间"></el-table-column>
+        <el-table-column prop="env" label="环境"></el-table-column>
+        <el-table-column prop="tag" label="标签"></el-table-column>
+        <el-table-column>
+          <template>
+            <el-tooltip class="item" effect="dark" content="编辑"  placement="top">
+              <el-button type="primary" icon="el-icon-edit" size="small"></el-button>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="删除" placement="top">
+              <el-button type="danger" icon="el-icon-delete" size="small"></el-button>
+            </el-tooltip>
+          </template>
+        </el-table-column>
+      </el-table>
     </el-card>
     </div>
 </template>
@@ -137,6 +160,16 @@
 export default {
   data () {
     return {
+      projectList: {
+      },
+      queryInfo: {
+        query: 2,
+        pageSize: 5,
+        currentPage: 1
+      },
+      tableProjectData: {
+
+      },
       envList: [
         {
           key: '',
@@ -167,8 +200,15 @@ export default {
     }
   },
   created () {
+    this.getAllProject()
   },
   methods: {
+    async getAllProject () {
+      const { data: res } = await this.$http.get('/project/queryProject', { params: this.queryInfo })
+      if (res.code !== 20000) return this.$message.error('获取测试集失败')
+      this.projectList = res.data.projects
+      this.total = res.total
+    },
     submitProjectData () {
       this.$refs.addProjectFormRef.validate(async (valid) => {
         const { data: res } = await this.$http.post('project/createProject', {
@@ -178,6 +218,7 @@ export default {
         })
         if (res.code !== 20000) return this.$message.error('测试集合新建失败')
         this.$message.success('测试集合新建成功')
+        this.getAllProject()
       })
       this.projectDialogVisible = false
     },
