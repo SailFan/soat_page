@@ -128,7 +128,7 @@
         </el-dialog>
       </el-row>
       <el-table
-        :data="projectList"
+       :data="projectList"
         stripe
         style="width: 100%">
         <el-table-column type="index" label="#"></el-table-column>
@@ -207,7 +207,8 @@ export default {
   },
   methods: {
     delOneProject (row) {
-      console.log(row)
+      // console.log(row)
+      alert('1222')
     },
     handleSizeChange (newSize) {
       this.queryInfo.pageSize = newSize
