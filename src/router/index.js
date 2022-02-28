@@ -11,10 +11,13 @@ import Project from '@/components/projects/Project'
 import InterfaceManagement from '@/components/interfaces/InterfaceManagement'
 import InterfaceDetail from '@/components/interfaces/InterfaceDetail'
 import '../assets/css/global.css'
+import mavonEditor from 'mavon-editor'
 import moment from 'moment'
+import Document from '@/components/file/Document'
 
 Vue.use(VueRouter)
 Vue.use(moment)
+Vue.use(mavonEditor)
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -25,6 +28,7 @@ const routes = [
     redirect: '/statement',
     children: [
       { path: '/statement', component: Statement },
+      { path: '/document', component: Document },
       { path: '/project', component: Project },
       { path: '/iManagement', component: InterfaceManagement },
       { path: '/permission', component: Permission },
