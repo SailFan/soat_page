@@ -2,23 +2,23 @@
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>测试集</el-breadcrumb-item>
-      <el-breadcrumb-item>测试集管理</el-breadcrumb-item>
+      <el-breadcrumb-item>工程</el-breadcrumb-item>
+      <el-breadcrumb-item>工程管理</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="box-card">
       <el-row>
-        <el-button type="primary" @click="showProjectDialog">新增测试集合</el-button>
+        <el-button type="primary" @click="showProjectDialog">新增工程合</el-button>
         <el-dialog
         destroy-on-close
-          title="新增测试集合"
+          title="新增工程合"
           :visible.sync="projectDialogVisible"
           width="40%">
           <el-form ref="addProjectFormRef" :model="addProjectFormMode" label-width="80px" :rules="projectformRules">
             <el-form-item label="名称" prop="projectName">
-              <el-input v-model="addProjectFormMode.projectName" placeholder="请输入测试集名称"></el-input>
+              <el-input v-model="addProjectFormMode.projectName" placeholder="请输入工程名称"></el-input>
             </el-form-item>
             <el-form-item label="公共路径" prop="basePath">
-              <el-input v-model="addProjectFormMode.basePath" placeholder="请输入该测试集合的基础URL"></el-input>
+              <el-input v-model="addProjectFormMode.basePath" placeholder="请输入该工程合的基础URL"></el-input>
             </el-form-item>
             <el-form-item label="是否私密" prop="projectType">
               <el-switch v-model="addProjectFormMode.projectType"></el-switch>
@@ -133,7 +133,7 @@
         :data="projectList"
         style="width: 100%">
         <el-table-column type="index" label="#"></el-table-column>
-        <el-table-column prop="projectName" label="测试集名称"></el-table-column>
+        <el-table-column prop="projectName" label="工程名称"></el-table-column>
         <el-table-column prop="basePath" label="基础路劲"></el-table-column>
         <el-table-column prop="projectType" label="是否私有" :formatter="formatType"></el-table-column>
         <el-table-column prop="uid" label="创建人"></el-table-column>
@@ -195,11 +195,11 @@ export default {
       },
       projectformRules: {
         projectName: [
-          { required: true, message: '请输入测试集合名称', trigger: 'blur' },
+          { required: true, message: '请输入工程名称', trigger: 'blur' },
           { min: 1, max: 10, message: '只能输入1-10个字符', trigger: 'blur' }
         ],
         basePath: [
-          { required: true, message: '请输入测试集合的基础路径', trigger: 'blur' }
+          { required: true, message: '请输入工程合的基础路径', trigger: 'blur' }
         ]
       }
     }
@@ -229,7 +229,7 @@ export default {
       ]
     },
     async delOneProject (row) {
-      const confirmRes = await this.$confirm('是否永久删除该项目', '删除项目', {
+      const confirmRes = await this.$confirm('是否永久删除该工程', '删除工程', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -245,8 +245,8 @@ export default {
           id: row.id
         }
       })
-      if (res.code !== 20000) return this.$message.error('获取测试集失败')
-      this.$message.success('删除测试集合成功')
+      if (res.code !== 20000) return this.$message.error('获取工程失败')
+      this.$message.success('删除工程合成功')
       this.getAllProject()
     },
     handleSizeChange (newSize) {
@@ -267,7 +267,7 @@ export default {
     },
     async getAllProject () {
       const { data: res } = await this.$http.get('/project/queryProject', { params: this.queryInfo })
-      if (res.code !== 20000) return this.$message.error('获取测试集失败')
+      if (res.code !== 20000) return this.$message.error('获取工程失败')
       this.total = res.data.total
       const temList = []
       for (const i in res.data.projects) {
@@ -282,8 +282,8 @@ export default {
           env: this.envList,
           tag: this.tagList
         })
-        if (res.code !== 20000) return this.$message.error('测试集合新建失败')
-        this.$message.success('测试集合新建成功')
+        if (res.code !== 20000) return this.$message.error('工程合新建失败')
+        this.$message.success('工程合新建成功')
         this.getAllProject()
       })
       this.projectDialogVisible = false
