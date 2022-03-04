@@ -9,6 +9,7 @@
       <el-row>
         <el-button type="primary" @click="showProjectDialog">新增测试集合</el-button>
         <el-dialog
+        destroy-on-close
           title="新增测试集合"
           :visible.sync="projectDialogVisible"
           width="40%">
@@ -19,7 +20,7 @@
             <el-form-item label="公共路径" prop="basePath">
               <el-input v-model="addProjectFormMode.basePath" placeholder="请输入该测试集合的基础URL"></el-input>
             </el-form-item>
-            <el-form-item label="是否私密">
+            <el-form-item label="是否私密" prop="projectType">
               <el-switch v-model="addProjectFormMode.projectType"></el-switch>
             </el-form-item>
             <div>
@@ -128,13 +129,14 @@
         </el-dialog>
       </el-row>
       <el-table
-       :data="projectList"
         stripe
+        :data="projectList"
         style="width: 100%">
         <el-table-column type="index" label="#"></el-table-column>
         <el-table-column prop="projectName" label="测试集名称"></el-table-column>
         <el-table-column prop="basePath" label="基础路劲"></el-table-column>
         <el-table-column prop="projectType" label="是否私有" :formatter="formatType"></el-table-column>
+        <el-table-column prop="uid" label="创建人"></el-table-column>
         <el-table-column prop="addTime" label="创建时间" :formatter="formatDate"></el-table-column>
         <el-table-column prop="upTime" label="更新时间" :formatter="formatDate"></el-table-column>
         <el-table-column>
@@ -142,8 +144,8 @@
             <el-tooltip class="item" effect="dark" content="编辑"  placement="top">
               <el-button type="primary" icon="el-icon-edit" size="small"></el-button>
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="删除" placement="top" @click="delOneProject(scope.row)">
-              <el-button type="danger" icon="el-icon-delete" size="small"></el-button>
+            <el-tooltip class="item" effect="dark" content="删除" placement="top">
+              <el-button type="danger" icon="el-icon-delete" size="small" @click="delOneProject(scope.row)"></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="接口" placement="top">
               <el-button type="info" icon="el-icon-s-fold" size="small"></el-button>
@@ -168,7 +170,7 @@ export default {
       projectList: {
       },
       queryInfo: {
-        query: 2,
+        uid: 2,
         pageSize: 5,
         currentPage: 1
       },
@@ -184,7 +186,7 @@ export default {
           value: ''
         }
       ],
-      total: '',
+      total: 0,
       projectDialogVisible: false,
       addProjectFormMode: {
         projectName: '',
@@ -206,9 +208,46 @@ export default {
     this.getAllProject()
   },
   methods: {
-    delOneProject (row) {
-      // console.log(row)
-      alert('1222')
+    reSetData () {
+      // eslint-disable-next-line no-unused-expressions,no-sequences
+      this.addProjectFormMode.projectName = '',
+      this.addProjectFormMode.basePath = '',
+      this.addProjectFormMode.projectType = true
+      // eslint-disable-next-line no-unused-expressions
+      this.envList = [
+        {
+          key: '',
+          value: ''
+        }
+        // eslint-disable-next-line no-sequences
+      ],
+      this.tagList = [
+        {
+          key: '',
+          value: ''
+        }
+      ]
+    },
+    async delOneProject (row) {
+      const confirmRes = await this.$confirm('是否永久删除该项目', '删除项目', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).catch(err => err)
+      console.log(confirmRes)
+      if (confirmRes !== 'confirm') {
+        return this.$message.info('删除操作取消')
+      }
+      const { data: res } = await this.$http.get('/project/delOneProject', {
+        params: {
+          projectType: row.projectType,
+          uid: row.uid,
+          id: row.id
+        }
+      })
+      if (res.code !== 20000) return this.$message.error('获取测试集失败')
+      this.$message.success('删除测试集合成功')
+      this.getAllProject()
     },
     handleSizeChange (newSize) {
       this.queryInfo.pageSize = newSize
@@ -229,8 +268,12 @@ export default {
     async getAllProject () {
       const { data: res } = await this.$http.get('/project/queryProject', { params: this.queryInfo })
       if (res.code !== 20000) return this.$message.error('获取测试集失败')
-      this.projectList = res.data.projects
       this.total = res.data.total
+      const temList = []
+      for (const i in res.data.projects) {
+        temList.push(res.data.projects[i])
+      }
+      this.projectList = temList
     },
     submitProjectData () {
       this.$refs.addProjectFormRef.validate(async (valid) => {
@@ -264,6 +307,7 @@ export default {
       })
     },
     showProjectDialog () {
+      this.reSetData()
       this.projectDialogVisible = true
     }
   }
