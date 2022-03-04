@@ -7,10 +7,10 @@
     </el-breadcrumb>
     <el-card class="box-card">
       <el-row>
-        <el-button type="primary" @click="showProjectDialog">新增工程合</el-button>
+        <el-button type="primary" @click="showProjectDialog">新增工程</el-button>
         <el-dialog
         destroy-on-close
-          title="新增工程合"
+          title="新增工程"
           :visible.sync="projectDialogVisible"
           width="40%">
           <el-form ref="addProjectFormRef" :model="addProjectFormMode" label-width="80px" :rules="projectformRules">
@@ -18,7 +18,7 @@
               <el-input v-model="addProjectFormMode.projectName" placeholder="请输入工程名称"></el-input>
             </el-form-item>
             <el-form-item label="公共路径" prop="basePath">
-              <el-input v-model="addProjectFormMode.basePath" placeholder="请输入该工程合的基础URL"></el-input>
+              <el-input v-model="addProjectFormMode.basePath" placeholder="请输入该工程的基础URL"></el-input>
             </el-form-item>
             <el-form-item label="是否私密" prop="projectType">
               <el-switch v-model="addProjectFormMode.projectType"></el-switch>
@@ -199,7 +199,7 @@ export default {
           { min: 1, max: 10, message: '只能输入1-10个字符', trigger: 'blur' }
         ],
         basePath: [
-          { required: true, message: '请输入工程合的基础路径', trigger: 'blur' }
+          { required: true, message: '请输入工程的基础路径', trigger: 'blur' }
         ]
       }
     }
@@ -246,7 +246,7 @@ export default {
         }
       })
       if (res.code !== 20000) return this.$message.error('获取工程失败')
-      this.$message.success('删除工程合成功')
+      this.$message.success('删除工程成功')
       this.getAllProject()
     },
     handleSizeChange (newSize) {
@@ -282,8 +282,8 @@ export default {
           env: this.envList,
           tag: this.tagList
         })
-        if (res.code !== 20000) return this.$message.error('工程合新建失败')
-        this.$message.success('工程合新建成功')
+        if (res.code !== 20000) return this.$message.error('工程新建失败')
+        this.$message.success('工程新建成功')
         this.getAllProject()
       })
       this.projectDialogVisible = false

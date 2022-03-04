@@ -14,6 +14,7 @@ import '../assets/css/global.css'
 import mavonEditor from 'mavon-editor'
 import moment from 'moment'
 import Document from '@/components/file/Document'
+import 'mavon-editor/dist/css/index.css'
 
 Vue.use(VueRouter)
 Vue.use(moment)

@@ -134,7 +134,7 @@ export default {
       if (reg.test(value)) {
         return cb()
       }
-      cb(new Error('请输入合法邮箱'))
+      cb(new Error('请输入法邮箱'))
     }
 
     var checkPhone = (rule, value, cb) => {
@@ -142,7 +142,7 @@ export default {
       if (reg.test(value)) {
         return cb()
       }
-      cb(new Error('请输入合法手机号'))
+      cb(new Error('请输入法手机号'))
     }
 
     return {
