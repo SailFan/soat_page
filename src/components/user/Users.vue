@@ -25,7 +25,7 @@
         <el-table-column label="邮箱" prop="email"></el-table-column>
         <el-table-column label="电话" prop="phone"></el-table-column>
         <el-table-column label="角色" prop="role"></el-table-column>
-        <el-table-column label="冻结" prop="status">
+        <el-table-column label="解冻" prop="status">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.status" @change="userStateChange(scope.row)">
             </el-switch>
