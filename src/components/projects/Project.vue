@@ -148,7 +148,7 @@
               <el-button type="danger" icon="el-icon-delete" size="small" @click="delOneProject(scope.row)"></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="接口" placement="top">
-              <el-button type="info" icon="el-icon-s-fold" size="small"></el-button>
+              <el-button type="info" icon="el-icon-s-fold" size="small" @click="openInterfaceList(scope.row)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -208,6 +208,9 @@ export default {
     this.getAllProject()
   },
   methods: {
+    openInterfaceList (row) {
+      this.$router.push({ path: '/iManagement', query: { id: row.id } })
+    },
     reSetData () {
       // eslint-disable-next-line no-unused-expressions,no-sequences
       this.addProjectFormMode.projectName = '',

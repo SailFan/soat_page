@@ -56,11 +56,15 @@ export default {
       this.$refs.loginFormRef.validate(async (valid) => {
         if (valid === false) return
         const { data: res } = await this.$http.post('/auth/login', this.Loginform)
-        console.log(res)
-        if (res.code !== 20003) return this.$message.error('用户或者密码不正确')
-        this.$message.success('登录成功')
-        window.sessionStorage.setItem('token', res.data.token)
-        this.$router.push('/home')
+        if (res.code === 20003) {
+          window.sessionStorage.setItem('token', res.data.token)
+          this.$router.push('/home')
+          return this.$message.success('登录成功')
+        } else if (res.code === 400032) {
+          return this.$message.error('账号被锁定')
+        } else {
+          this.$message.error('用户或者密码不正确')
+        }
       })
     }
   }

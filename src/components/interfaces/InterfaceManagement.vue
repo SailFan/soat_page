@@ -37,9 +37,9 @@
             label="标签">
           </el-table-column>
           <el-table-column label="操作" width="200px">
-            <template>
+            <template  slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="编辑"  placement="top">
-                <el-button type="primary" icon="el-icon-edit" size="small"></el-button>
+                <el-button type="primary" icon="el-icon-edit" size="small" @click="openInterface(scope.row)"></el-button>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="删除" placement="top">
                 <el-button type="danger" icon="el-icon-delete" size="small"></el-button>
@@ -128,6 +128,9 @@ export default {
     }
   },
   methods: {
+    openInterface (row) {
+      this.$router.push({ path: '/interfaceDetail', query: { id: row.id } })
+    },
     showAddInterfaceDialog () {
       this.addInterfacedialogVisible = true
     },
