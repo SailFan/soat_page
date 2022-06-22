@@ -10,6 +10,7 @@ import Devices from '@/components/resources/Devices'
 import Project from '@/components/projects/Project'
 import InterfaceManagement from '@/components/interfaces/InterfaceManagement'
 import InterfaceDetail from '@/components/interfaces/InterfaceDetail'
+import DeleteAccountLink from '@/components/util/DeleteAccountLink'
 import '../assets/css/global.css'
 import mavonEditor from 'mavon-editor'
 import moment from 'moment'
@@ -34,9 +35,10 @@ const routes = [
       { path: '/iManagement', component: InterfaceManagement },
       { path: '/permission', component: Permission },
       { path: '/accounts', component: Accounts },
-      { path: '/interfaceDetail', component: InterfaceDetail },
+      { path: '/ ', component: InterfaceDetail },
       { path: '/devices', component: Devices },
-      { path: '/users', component: Users }]
+      { path: '/users', component: Users },
+      { path: '/deleteAccountLink', component: DeleteAccountLink }]
   }
 ]
 

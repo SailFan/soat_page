@@ -179,7 +179,7 @@ export default {
       },
       editRoleFormRules: {
         roleName: [
-          { roleName: true, message: '请输入角色名称', trigger: 'blur' },
+          { required: true, message: '请输入角色名称', trigger: 'blur' },
           { min: 1, max: 10, message: '角色名1到10位' }
         ]
       },

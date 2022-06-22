@@ -8,8 +8,8 @@
       <!--登录表单-->
       <el-form label-width="0px" class="login_form" :model="Loginform" :rules="LoginformRules" ref="loginFormRef">
         <!--用户名-->
-        <el-form-item prop="username">
-          <el-input v-model="Loginform.username" prefix-icon="el-icon-s-custom" placeholder="请输入用户名"></el-input>
+        <el-form-item prop="email">
+          <el-input v-model="Loginform.email" prefix-icon="el-icon-s-custom" placeholder="请输入邮箱"></el-input>
         </el-form-item>
         <!--密码-->
         <el-form-item prop="password">
@@ -31,13 +31,13 @@ export default {
     return {
       // 这是登录表单的数据绑定对象
       Loginform: {
-        username: '',
+        email: '',
         password: ''
       },
       // 这是表单的验证规则对象
       LoginformRules: {
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
           { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
         ],
         password: [

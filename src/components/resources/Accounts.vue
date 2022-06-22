@@ -9,7 +9,7 @@
       <el-row>
         <el-button type="primary" @click="showAddRoleDialog">添加账号</el-button>
       </el-row>
-      <el-table  border stripe>
+      <el-table  stripe>
         <el-table-column type="index" label="#"></el-table-column>
         <el-table-column label="地址" prop="roleName"></el-table-column>
         <el-table-column label="账号" prop="roleTag"></el-table-column>

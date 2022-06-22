@@ -50,7 +50,8 @@ export default {
         3: 'el-icon-s-custom',
         4: 'el-icon-s-management',
         5: 'el-icon-setting',
-        14: 'el-icon-notebook-1'
+        14: 'el-icon-notebook-1',
+        17: 'el-icon-s-cooperation'
       },
       isColl: false,
       activePath: ''
