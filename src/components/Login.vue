@@ -31,8 +31,8 @@ export default {
     return {
       // 这是登录表单的数据绑定对象
       Loginform: {
-        email: '',
-        password: ''
+        email: 'afan6203@126.com',
+        password: '123456'
       },
       // 这是表单的验证规则对象
       LoginformRules: {

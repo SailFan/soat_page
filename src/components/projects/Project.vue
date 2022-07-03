@@ -136,7 +136,7 @@
         <el-table-column prop="projectName" label="工程名称"></el-table-column>
         <el-table-column prop="basePath" label="基础路劲"></el-table-column>
         <el-table-column prop="projectType" label="是否私有" :formatter="formatType"></el-table-column>
-        <el-table-column prop="uid" label="创建人"></el-table-column>
+        <el-table-column prop="creater" label="创建人"></el-table-column>
         <el-table-column prop="addTime" label="创建时间" :formatter="formatDate"></el-table-column>
         <el-table-column prop="upTime" label="更新时间" :formatter="formatDate"></el-table-column>
         <el-table-column>
@@ -170,7 +170,7 @@ export default {
       projectList: {
       },
       queryInfo: {
-        uid: 2,
+        creater: 'admin',
         pageSize: 5,
         currentPage: 1
       },
