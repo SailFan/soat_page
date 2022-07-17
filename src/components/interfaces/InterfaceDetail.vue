@@ -13,10 +13,12 @@
               <el-form-item label="接口名称" label-width="80px" prop="interfaceName">
                 <el-input placeholder="请输入接口名称" v-model="baseInterfaceFormModel.interfaceName"></el-input>
               </el-form-item>
-              <el-form-item label="选择分类" label-width="80px">
-                <el-select placeholder="请选择分类" v-model="baseInterfaceFormModel.region">
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
+              <el-form-item label="接口协议" label-width="80px">
+                <el-select placeholder="请选择协议" v-model="baseInterfaceFormModel.protocol">
+                  <el-option label="Post" value="Post"></el-option>
+                  <el-option label="Get" value="Get"></el-option>
+                  <el-option label="Delete" value="Delete"></el-option>
+                  <el-option label="Update" value="Update"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="接口路径" label-width="80px">
@@ -209,18 +211,22 @@
                           </div>
                         </el-form>
                       </el-tab-pane>
-                      <el-tab-pane label="json" name="third">
-                        <el-input
-                          type="textarea"
-                          :rows="10"
-                          v-model="textarea_json">
-                        </el-input>
+                      <el-tab-pane label="json" name="third" width="100%">
+                          <b-code-editor
+                          v-if="1<2"
+                          v-model="jsonData"
+                           theme="mdn-like"
+                           height="auto"
+                           :indent-unit="4"
+                          >
+                          </b-code-editor>
                       </el-tab-pane>
                       <el-tab-pane label="raw" name="fourth">
                         <el-input
                           type="textarea"
                           :rows="10"
-                          v-model="textarea_raw">
+                          v-model="textarea_raw"
+                          :smart-indent="true">
                         </el-input>
                       </el-tab-pane>
                     </el-tabs>
@@ -245,8 +251,8 @@ export default {
   data () {
     return {
       dialogVisible: false,
-      textarea_raw: '',
-      textarea_json: '',
+      textarea_raw: {},
+      template: { tempSource: '' },
       fileList: [
         { name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' },
         { name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }
@@ -271,7 +277,7 @@ export default {
       ],
       baseInterfaceFormModel: {
         interfaceName: '',
-        region: '',
+        protocol: 'Get',
         path: ''
       },
       activeName: 'first',

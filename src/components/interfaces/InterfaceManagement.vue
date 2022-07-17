@@ -7,7 +7,7 @@
     </el-breadcrumb>
     <el-card>
       <el-row>
-        <el-button type="primary" @click="showAddInterfaceDialog">添加接口</el-button>
+        <el-button type="primary" @click="addInterface">添加接口</el-button>
       </el-row>
       <template>
         <el-table
@@ -53,28 +53,26 @@
         title="添加接口"
         :visible.sync="addInterfacedialogVisible"
         width="30%">
-        <el-form label-width="80px" :rules="addInterfaceFormRules">
+        <el-form label-width="80px" :rules="addInterfaceFormRules" :model="interfaceform" ref="addInterfaceFormRef">
           <el-form-item label="接口分类" prop="interfaceType">
-            <el-input  placeholder="请输入接口分类"></el-input>
+            <el-input  placeholder="请输入接口分类" v-model="interfaceform.interfaceType"></el-input>
           </el-form-item>
           <el-form-item label="接口名称" prop="interfaceName">
-            <el-input  placeholder="请输入接口名称"></el-input>
+            <el-input  placeholder="请输入接口名称" v-model="interfaceform.interfaceName"></el-input>
           </el-form-item>
-          <el-form-item label="接口路劲" prop="interfacePath">
-            <el-input placeholder="请输入接口路径" class="input-with-select">
-              <el-select slot="prepend" placeholder="请选择协议">
-                <el-option label="GET" value="1"></el-option>
-                <el-option label="POST" value="2"></el-option>
-                <el-option label="DELETE" value="3"></el-option>
-                <el-option label="PUT" value="4"></el-option>
-              </el-select>
-            </el-input>
+          <el-form-item label="接口协议">
+          <el-select v-model="interfaceform.interfacePath" placeholder="协议类型">
+            <el-option label="get" value="get"></el-option>
+            <el-option label="post" value="post"></el-option>
+            <el-option label="delete" value="delete"></el-option>
+            <el-option label="update" value="update"></el-option>
+          </el-select>
           </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="addInterfaceDialogClosed">取 消</el-button>
-          <el-button>确 定</el-button>
-        </span>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+              <el-button  @click="closeInterfaceDialogClosed">取 消</el-button>
+              <el-button type="primary" @click="addInterface">确 定</el-button>
+          </span>
       </el-dialog>
     </el-card>
   </div>
@@ -84,6 +82,11 @@
 export default {
   data () {
     return {
+      interfaceform: {
+        interfaceType: '',
+        interfaceName: '',
+        interfacePath: 'get'
+      },
       tableData: [{
         date: '2016-05-02',
         name: '王小虎',
@@ -116,13 +119,6 @@ export default {
             message: '请输入接口名称',
             trigger: 'blur'
           }
-        ],
-        interfacePath: [
-          {
-            required: true,
-            message: '请输入接口路径',
-            trigger: 'blur'
-          }
         ]
       }
     }
@@ -134,9 +130,18 @@ export default {
     showAddInterfaceDialog () {
       this.addInterfacedialogVisible = true
     },
-    addInterfaceDialogClosed () {
+    closeInterfaceDialogClosed () {
       this.addInterfacedialogVisible = false
       // this.$refs.addFormRef.resetFields()
+    },
+    addInterface () {
+      this.$router.push({ path: '/interfaceDetail' })
+      // interfaceDetail
+      // this.$refs.addInterfaceFormRef.validate(async (valid) => {
+      //   if (valid === false) return
+      //   const { data: res } = await this.$http.post('/interface/addInterface', this.interfaceform)
+      //   console.log(res)
+      // })
     }
   }
 }

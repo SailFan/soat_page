@@ -4,7 +4,8 @@ import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
-import JsonViewer from 'vue-json-viewer'
+import CodeEditor from 'bin-code-editor'
+
 Vue.prototype.$http = axios
 axios.defaults.baseURL = 'http://127.0.0.1:8082'
 axios.interceptors.request.use(config => {
@@ -13,7 +14,7 @@ axios.interceptors.request.use(config => {
   return config
 })
 Vue.use(ElementUI)
-Vue.use(JsonViewer)
+Vue.use(CodeEditor)
 Vue.config.productionTip = false
 
 new Vue({

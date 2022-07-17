@@ -33,6 +33,7 @@ const routes = [
       { path: '/document', component: Document },
       { path: '/project', component: Project },
       { path: '/iManagement', component: InterfaceManagement },
+      { path: '/interfaceDetail', component: InterfaceDetail },
       { path: '/permission', component: Permission },
       { path: '/accounts', component: Accounts },
       { path: '/ ', component: InterfaceDetail },
