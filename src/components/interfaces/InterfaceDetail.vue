@@ -172,7 +172,7 @@
                                 type="info"
                                 :closable="false">
                                 <template slot='title'>
-                                  请根据不同的请求类型,填写不同格式的数据，需要自己做判断，我这个半吊子水前端做不了这些！！
+                                  请根据不同的请求类型,填写不同格式的数据，需要自己做判断！
                                 </template>
                               </el-alert>
                               <i slot="reference" style="margin-left: 5px" class="el-icon-info"></i>
@@ -213,7 +213,8 @@
                       </el-tab-pane>
                       <el-tab-pane label="json" name="third" width="100%">
                           <b-code-editor
-                          v-if="1<2"
+                          :key="new Date().getTime()"
+                          v-if="isShow"
                           v-model="jsonData"
                            theme="mdn-like"
                            height="auto"
@@ -250,6 +251,7 @@
 export default {
   data () {
     return {
+      isShow: true,
       dialogVisible: false,
       textarea_raw: {},
       template: { tempSource: '' },
