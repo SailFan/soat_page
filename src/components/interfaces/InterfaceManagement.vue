@@ -11,42 +11,45 @@
       </el-row>
       <template>
         <el-table
-          :data="tableData"
+          :data="interfaceList"
           stripe
           style="width: 100%">
+          <el-table-column type="index" label="#"></el-table-column>
           <el-table-column
-            prop="date"
+            prop="name"
             label="接口名称"
             width="180">
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="path"
             label="接口路径"
             width="180">
           </el-table-column>
           <el-table-column
-            prop="address"
+            prop="method"
             label="接口分类">
           </el-table-column>
           <el-table-column
-            prop="address"
-            label="上一次运行状态">
+            prop="env"
+            label="域名">
           </el-table-column>
           <el-table-column
-            prop="address"
-            label="标签">
+            prop="run"
+            label="状态">
           </el-table-column>
-          <el-table-column label="操作" width="200px">
+           <el-table-column label="操作" width="200px">
             <template  slot-scope="scope">
-              <el-tooltip class="item" effect="dark" content="编辑"  placement="top">
-                <el-button type="primary" icon="el-icon-edit" size="small" @click="openInterface(scope.row)"></el-button>
-              </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="删除" placement="top">
-                <el-button type="danger" icon="el-icon-delete" size="small"></el-button>
-              </el-tooltip>
+                <el-button type="text" size="small" @click="openInterface(scope.row)">编辑</el-button>
+                <el-button type="text" size="small">删除</el-button>
+                <el-button type="text" size="small">运行</el-button>
             </template>
           </el-table-column>
         </el-table>
+        <el-pagination
+          small
+          layout="prev, pager, next"
+          :total="50">
+        </el-pagination>
       </template>
 <!--      添加接口dialog开始-->
       <el-dialog
@@ -82,28 +85,19 @@
 export default {
   data () {
     return {
+      total: 0,
+      interfaceList: {
+
+      },
+      queryInfo: {
+        pageSize: 20,
+        currentPage: 1
+      },
       interfaceform: {
         interfaceType: '',
         interfaceName: '',
         interfacePath: 'get'
       },
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }],
       addInterfacedialogVisible: false,
       addInterfaceFormRules: {
         interfaceType: [
@@ -123,7 +117,20 @@ export default {
       }
     }
   },
+  created () {
+    this.getAllInterface()
+  },
   methods: {
+    async getAllInterface () {
+      const { data: res } = await this.$http.get('/interface/getAllInterface', { params: this.queryInfo })
+      if (res.code !== 20000) return this.$message.error('获取接口失败')
+      this.total = res.data.total
+      const temList = []
+      for (const i in res.data.anInterface) {
+        temList.push(res.data.anInterface[i])
+      }
+      this.interfaceList = temList
+    },
     openInterface (row) {
       this.$router.push({ path: '/interfaceDetail', query: { id: row.id } })
     },
