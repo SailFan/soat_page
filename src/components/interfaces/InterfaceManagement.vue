@@ -41,7 +41,7 @@
             <template  slot-scope="scope">
                 <el-button type="text" size="small" @click="openInterface(scope.row)">编辑</el-button>
                 <el-button type="text" size="small">删除</el-button>
-                <el-button type="text" size="small">运行</el-button>
+                <el-button type="text" size="small" @click="runOneInterface(scope.row)">运行</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -121,6 +121,11 @@ export default {
     this.getAllInterface()
   },
   methods: {
+    async runOneInterface (row) {
+      const { data: res } = await this.$http.get('/interface/runInterface', { params: row })
+      console.log(row)
+      if (res.code !== 20000) return this.$message.error('运行接口失败')
+    },
     async getAllInterface () {
       const { data: res } = await this.$http.get('/interface/getAllInterface', { params: this.queryInfo })
       if (res.code !== 20000) return this.$message.error('获取接口失败')

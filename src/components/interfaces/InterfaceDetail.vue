@@ -42,7 +42,7 @@
                     <el-option label="DELETE" value="DELETE"></el-option>
                   </el-select>
                   <el-button slot="append" @click="savaInterfaceData">保存</el-button>
-                  <el-button slot="append">运行</el-button>
+                  <el-button slot="append" @click="runInterfaceData">运行</el-button>
                 </el-input>
                 </el-form-item>
             </el-form>
@@ -244,6 +244,7 @@
                     </el-tabs>
                   </el-tab-pane>
                   <el-tab-pane label="Test" name="test">Test</el-tab-pane>
+                  <el-tab-pane label="Response" name="response">Here is nothing</el-tab-pane>
                 </el-tabs>
         </div>
       </template>
@@ -307,11 +308,11 @@ export default {
     }
   },
   methods: {
+    runInterfaceData () {
+      this.activePart = 'response'
+    },
     handClose () {
       this.dialogVisible = false
-    },
-    runInterfaceData () {
-      this.dialogVisible = true
     },
     handleRemove (file, fileList) {
       console.log(file, fileList)

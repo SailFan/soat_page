@@ -56,8 +56,8 @@ export default {
     },
     deleteLink () {
       this.$refs.deleteAccountFormRef.validate(async (valid) => {
+        // eslint-disable-next-line no-useless-return
         if (valid === false) return
-        console.log('111')
       })
     }
   }
