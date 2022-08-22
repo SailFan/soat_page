@@ -333,6 +333,7 @@ export default {
           params: this.extraList,
           headers: this.extraHeadList
         })
+        if (res.code === 40036) return this.$message.error('新增接口时，接口名称不可重复')
         if (res.code !== 20000) return this.$message.error('接口保存失败')
         this.$router.push({ path: '/iManagement' })
       })

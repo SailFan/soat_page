@@ -123,7 +123,6 @@ export default {
   methods: {
     async runOneInterface (row) {
       const { data: res } = await this.$http.get('/interface/runInterface', { params: row })
-      console.log(row)
       if (res.code !== 20000) return this.$message.error('运行接口失败')
     },
     async getAllInterface () {
