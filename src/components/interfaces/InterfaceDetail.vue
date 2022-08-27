@@ -260,7 +260,11 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
+  computed: {
+    ...mapState(['projectId'])
+  },
   data () {
     return {
       dialogVisible: false,
@@ -331,7 +335,8 @@ export default {
         const { data: res } = await this.$http.post('interface/addInterface', {
           baseData: this.baseInterfaceFormModel,
           params: this.extraList,
-          headers: this.extraHeadList
+          headers: this.extraHeadList,
+          projectId: this.projectId
         })
         if (res.code === 40036) return this.$message.error('新增接口时，接口名称不可重复')
         if (res.code !== 20000) return this.$message.error('接口保存失败')

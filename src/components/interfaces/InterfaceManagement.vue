@@ -14,7 +14,10 @@
           :data="interfaceList"
           stripe
           style="width: 100%">
-          <el-table-column type="index" label="#"></el-table-column>
+          <el-table-column
+           prop="id"
+           label="ID">
+          </el-table-column>
           <el-table-column
             prop="name"
             label="接口名称"
@@ -82,6 +85,7 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 export default {
   data () {
     return {
@@ -118,15 +122,30 @@ export default {
     }
   },
   created () {
+    this.saveProjectId()
     this.getAllInterface()
   },
+
+  computed: {
+    ...mapState(['projectId'])
+  },
   methods: {
+    ...mapMutations(['updateProjectId']),
+    saveProjectId () {
+      const id = this.$route.query.id
+      id && this.updateProjectId(id)
+    },
     async runOneInterface (row) {
       const { data: res } = await this.$http.get('/interface/runInterface', { params: row })
       if (res.code !== 20000) return this.$message.error('运行接口失败')
     },
     async getAllInterface () {
-      const { data: res } = await this.$http.get('/interface/getAllInterface', { params: this.queryInfo })
+      const { data: res } = await this.$http.get('/interface/getAllInterface', {
+        params: {
+          ...this.queryInfo,
+          projectId: this.projectId
+        }
+      })
       if (res.code !== 20000) return this.$message.error('获取接口失败')
       this.total = res.data.total
       const temList = []

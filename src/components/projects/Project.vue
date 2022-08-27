@@ -132,7 +132,7 @@
         stripe
         :data="projectList"
         style="width: 100%">
-        <el-table-column type="index" label="#"></el-table-column>
+        <el-table-column prop="id" label="ID"></el-table-column>
         <el-table-column prop="projectName" label="工程名称"></el-table-column>
         <el-table-column prop="basePath" label="基础路劲"></el-table-column>
         <el-table-column prop="projectType" label="是否私有" :formatter="formatType"></el-table-column>
