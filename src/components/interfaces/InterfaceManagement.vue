@@ -16,6 +16,7 @@
           style="width: 100%">
           <el-table-column
            prop="id"
+           width="80"
            label="ID">
           </el-table-column>
           <el-table-column
@@ -39,11 +40,14 @@
           <el-table-column
             prop="run"
             label="状态">
+            <template slot-scope="scope">
+           <span>{{scope.row.run|capitalize}}</span>
+        </template>
           </el-table-column>
            <el-table-column label="操作" width="200px">
             <template  slot-scope="scope">
                 <el-button type="text" size="small" @click="openInterface(scope.row)">编辑</el-button>
-                <el-button type="text" size="small">删除</el-button>
+                <el-button type="text" size="small" @click="delInterface(scope.row)">删除</el-button>
                 <el-button type="text" size="small" @click="runOneInterface(scope.row)">运行</el-button>
             </template>
           </el-table-column>
@@ -129,6 +133,13 @@ export default {
   computed: {
     ...mapState(['projectId'])
   },
+  filters: {
+    capitalize (value) {
+      if (value) return '通过'
+      // eslint-disable-next-line no-return-assign
+      return value = '失败'
+    }
+  },
   methods: {
     ...mapMutations(['updateProjectId']),
     saveProjectId () {
@@ -136,7 +147,7 @@ export default {
       id && this.updateProjectId(id)
     },
     async runOneInterface (row) {
-      const { data: res } = await this.$http.get('/interface/runInterface', { params: row })
+      const { data: res } = await this.$http.get('/interface/runInterface', { params: { id: row.id } })
       if (res.code !== 20000) return this.$message.error('运行接口失败')
     },
     async getAllInterface () {
@@ -155,6 +166,7 @@ export default {
       this.interfaceList = temList
     },
     openInterface (row) {
+      // this.$router.push({ path: '/iManagement', query: { id: row.id } })
       this.$router.push({ path: '/interfaceDetail', query: { id: row.id } })
     },
     showAddInterfaceDialog () {
@@ -172,6 +184,12 @@ export default {
       //   const { data: res } = await this.$http.post('/interface/addInterface', this.interfaceform)
       //   console.log(res)
       // })
+    },
+    async delInterface (row) {
+      const { data: res } = await this.$http.get('/interface/delOneInterface', { params: { id: row.id } })
+      if (res.code !== 20000) return this.$message.error('删除接口失败')
+      this.$message.success('删除成功')
+      this.getAllInterface()
     }
   }
 }

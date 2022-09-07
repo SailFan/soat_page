@@ -311,7 +311,27 @@ export default {
       }
     }
   },
+  created () {
+    if (this.$route.query.id) {
+      console.log('进入编辑页面。。。')
+      this.getInterfaceDate()
+    }
+  },
   methods: {
+    async getInterfaceDate () {
+      const { data: res } = await this.$http.get('/interface/getOneInterface', {
+        params: {
+          id: this.$route.query.id
+        }
+      })
+      if (res.code === 40039) { return this.$message.error('接口获取失败') }
+      this.baseInterfaceFormModel.interfaceName = res.data.name
+      this.baseInterfaceFormModel.interfaceProtocol = res.data.procotol
+      this.baseInterfaceFormModel.interfacePath = res.data.path
+      this.baseInterfaceFormModel.interfaceMethod = res.data.method
+      this.extraList = res.data.params
+      this.extraHeadList = res.data.headers
+    },
     runInterfaceData () {
       this.activePart = 'response'
     },
@@ -389,3 +409,7 @@ input .el-input-group__prepend {
   width: 100%;
 }
 </style>
+
+  function newFunction() {
+    return this
+  }
