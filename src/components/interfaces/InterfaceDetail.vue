@@ -293,6 +293,7 @@ export default {
         }
       ],
       baseInterfaceFormModel: {
+        id: this.$route.query.id,
         interfaceName: '',
         interfaceProtocol: 'http',
         interfacePath: '',
@@ -315,9 +316,15 @@ export default {
     if (this.$route.query.id) {
       console.log('进入编辑页面。。。')
       this.getInterfaceDate()
+    } else {
+      this.getDefaultHeaders()
     }
   },
   methods: {
+    async getDefaultHeaders () {
+      const { data: res } = await this.$http.get('/interface/generateDefaultHeaders')
+      this.extraHeadList = res.data
+    },
     async getInterfaceDate () {
       const { data: res } = await this.$http.get('/interface/getOneInterface', {
         params: {
@@ -409,7 +416,3 @@ input .el-input-group__prepend {
   width: 100%;
 }
 </style>
-
-  function newFunction() {
-    return this
-  }

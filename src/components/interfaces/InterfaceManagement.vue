@@ -16,7 +16,7 @@
           style="width: 100%">
           <el-table-column
            prop="id"
-           width="80"
+           width="50"
            label="ID">
           </el-table-column>
           <el-table-column

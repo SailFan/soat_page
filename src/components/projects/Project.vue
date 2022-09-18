@@ -5,9 +5,24 @@
       <el-breadcrumb-item>工程</el-breadcrumb-item>
       <el-breadcrumb-item>工程管理</el-breadcrumb-item>
     </el-breadcrumb>
+    <!-- <div class="search">
+      <el-row>
+        <el-col>
+          <div>
+            <span>项目名称：</span>
+            <el-input
+              type="text"
+              prefix-icon="el-icon-search"
+              placeholder="使用接口名称进行查询"
+              style="width: 270px; cursor: pointer"
+            ></el-input>
+          </div>
+        </el-col>
+        </el-row>
+    </div> -->
     <el-card class="box-card">
       <el-row>
-        <el-button type="primary" @click="showProjectDialog">新增工程</el-button>
+        <el-button type="text" @click="showProjectDialog">新增工程</el-button>
         <el-dialog
         destroy-on-close
           title="新增工程"
@@ -132,24 +147,18 @@
         stripe
         :data="projectList"
         style="width: 100%">
-        <el-table-column prop="id" label="ID"></el-table-column>
-        <el-table-column prop="projectName" label="工程名称"></el-table-column>
-        <el-table-column prop="basePath" label="基础路劲"></el-table-column>
-        <el-table-column prop="projectType" label="是否私有" :formatter="formatType"></el-table-column>
-        <el-table-column prop="creater" label="创建人"></el-table-column>
-        <el-table-column prop="addTime" label="创建时间" :formatter="formatDate"></el-table-column>
-        <el-table-column prop="upTime" label="更新时间" :formatter="formatDate"></el-table-column>
-        <el-table-column>
+        <el-table-column prop="id" label="ID" width="80"></el-table-column>
+        <el-table-column prop="projectName" label="工程名称" width="180"></el-table-column>
+        <el-table-column prop="basePath" label="基础路劲" width="180"></el-table-column>
+        <el-table-column prop="projectType" width="80" label="是否私有" :formatter="formatType"></el-table-column>
+        <el-table-column prop="creater" label="创建人" width="80"></el-table-column>
+        <el-table-column prop="addTime" label="创建时间" :formatter="formatDate" width="180"></el-table-column>
+        <el-table-column prop="upTime" label="更新时间" :formatter="formatDate" width="180"></el-table-column>
+        <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-tooltip class="item" effect="dark" content="编辑"  placement="top">
-              <el-button type="primary" icon="el-icon-edit" size="small"></el-button>
-            </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="删除" placement="top">
-              <el-button type="danger" icon="el-icon-delete" size="small" @click="delOneProject(scope.row)"></el-button>
-            </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="接口" placement="top">
-              <el-button type="info" icon="el-icon-s-fold" size="small" @click="openInterfaceList(scope.row)"></el-button>
-            </el-tooltip>
+            <el-button type="text" size="small">编辑</el-button>
+            <el-button type="text" size="small" @click="delOneProject(scope.row)">删除</el-button>
+            <el-button type="text" size="small" @click="openInterfaceList(scope.row)">接口列表</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -318,5 +327,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+.search {
+  width: 100%;
+  height: 20%;
+  margin-bottom: 10px;
+  margin-top: 30px;
+  // background-color: aqua;
+}
 </style>
