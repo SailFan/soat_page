@@ -114,7 +114,7 @@
                             type="info"
                             :closable="false">
                             <template slot='title'>
-                              请根据不同的请求类型,填写不同格式的数据，需要自己做判断，我这个半吊子水前端做不了这些！！
+                              请根据不同的请求类型,填写不同格式的数据！！
                             </template>
                           </el-alert>
                           <i slot="reference" style="margin-left: 5px" class="el-icon-info"></i>
@@ -226,8 +226,9 @@
                       <el-tab-pane label="json" name="third" width="100%">
                           <b-code-editor
                           :key="new Date().getTime()"
-                          v-model="jsonData"
+                           value="jsonData"
                            theme="idea"
+                           readonly="readonly"
                            height="auto"
                            :indent-unit="4"
                           >
@@ -243,8 +244,20 @@
                       </el-tab-pane>
                     </el-tabs>
                   </el-tab-pane>
-                  <el-tab-pane label="Test" name="test">Test</el-tab-pane>
-                  <el-tab-pane label="Response" name="response">Here is nothing</el-tab-pane>
+                  <el-tab-pane label="Test" name="test">
+                    121
+                  </el-tab-pane>
+                  <el-tab-pane label="Response" name="response">
+                    <b-code-editor
+                          :key="new Date().getTime()"
+                           v-model="responseData"
+                           :readonly="readonly"
+                           theme="idea"
+                           height="auto"
+                           :indent-unit="4"
+                          >
+                          </b-code-editor>
+                  </el-tab-pane>
                 </el-tabs>
         </div>
       </template>
@@ -267,6 +280,7 @@ export default {
   },
   data () {
     return {
+      responseData: '',
       dialogVisible: false,
       textarea_raw: {},
       template: { tempSource: '' },
@@ -314,7 +328,7 @@ export default {
   },
   created () {
     if (this.$route.query.id) {
-      console.log('进入编辑页面。。。')
+      this.isAble = true
       this.getInterfaceDate()
     } else {
       this.getDefaultHeaders()
@@ -341,6 +355,16 @@ export default {
     },
     runInterfaceData () {
       this.activePart = 'response'
+      this.$refs.baseInterfaceFormRef.validate(async (valid) => {
+        const { data: res } = await this.$http.post('interface/directlyRunInterface', {
+          baseData: this.baseInterfaceFormModel,
+          params: this.extraList,
+          headers: this.extraHeadList,
+          projectId: this.projectId
+        })
+        if (res.code !== 20000) return this.$message.error('接口保存失败')
+        this.responseData = res.data.message
+      })
     },
     handClose () {
       this.dialogVisible = false
@@ -369,6 +393,7 @@ export default {
         if (res.code !== 20000) return this.$message.error('接口保存失败')
         this.$router.push({ path: '/iManagement' })
       })
+      this.getInterfaceDate()
     },
     addExtraInput () {
       this.extraList.push({

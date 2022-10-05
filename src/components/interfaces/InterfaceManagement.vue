@@ -22,20 +22,17 @@
           <el-table-column
             prop="name"
             label="接口名称"
-            width="180">
+            width="280">
           </el-table-column>
           <el-table-column
             prop="path"
             label="接口路径"
-            width="180">
+            width="280">
           </el-table-column>
           <el-table-column
             prop="method"
-            label="接口分类">
-          </el-table-column>
-          <el-table-column
-            prop="env"
-            label="域名">
+            label="接口分类"
+            width="280">
           </el-table-column>
           <el-table-column
             prop="run"
@@ -147,8 +144,9 @@ export default {
       id && this.updateProjectId(id)
     },
     async runOneInterface (row) {
-      const { data: res } = await this.$http.get('/interface/runInterface', { params: { id: row.id } })
+      const { data: res } = await this.$http.get('/interface/runInterface', { params: { id: row.id, projectId: this.projectId } })
       if (res.code !== 20000) return this.$message.error('运行接口失败')
+      this.getAllInterface()
     },
     async getAllInterface () {
       const { data: res } = await this.$http.get('/interface/getAllInterface', {
