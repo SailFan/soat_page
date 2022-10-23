@@ -27,7 +27,7 @@
         <el-table-column label="角色名称" prop="roleName"></el-table-column>
         <!--        <el-table-column label="角色名称" prop="roleTag"></el-table-column>-->
 
-        <el-table-column label="操作" width="300px">
+        <el-table-column label="操作" width="300px" fixed="right">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" icon="el-icon-edit" @click="editRoleDialog(scope.row)">编辑</el-button>
             <el-button size="mini" type="danger" icon="el-icon-delete" @click="removeRole(scope.row.rid)">删除</el-button>

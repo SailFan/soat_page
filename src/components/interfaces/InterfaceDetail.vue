@@ -226,9 +226,8 @@
                       <el-tab-pane label="json" name="third" width="100%">
                           <b-code-editor
                           :key="new Date().getTime()"
-                           value="jsonData"
+                           v-value="jsonData"
                            theme="idea"
-                           readonly="readonly"
                            height="auto"
                            :indent-unit="4"
                           >
@@ -280,6 +279,7 @@ export default {
   },
   data () {
     return {
+      jsonData: '',
       responseData: '',
       dialogVisible: false,
       textarea_raw: {},
@@ -359,6 +359,7 @@ export default {
         const { data: res } = await this.$http.post('interface/directlyRunInterface', {
           baseData: this.baseInterfaceFormModel,
           params: this.extraList,
+          body: this.jsonData,
           headers: this.extraHeadList,
           projectId: this.projectId
         })
@@ -386,6 +387,7 @@ export default {
         const { data: res } = await this.$http.post('interface/addInterface', {
           baseData: this.baseInterfaceFormModel,
           params: this.extraList,
+          body: this.jsonData,
           headers: this.extraHeadList,
           projectId: this.projectId
         })
