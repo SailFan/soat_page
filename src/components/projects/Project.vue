@@ -176,8 +176,7 @@ import moment from 'moment'
 export default {
   data () {
     return {
-      projectList: {
-      },
+      projectList: [],
       queryInfo: {
         creater: 'admin',
         pageSize: 5,

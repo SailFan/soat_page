@@ -32,6 +32,7 @@
                 </el-input>
                 </el-form-item>
             </el-form>
+            <!-- get param 开始 -->
                 <el-tabs style="padding-top: 20px" v-model="activePart">
                   <el-tab-pane label="Params" name="params">
                     <el-form ref="formInline" class="demo-form-inline" label-position="right" label-width='20px'>
@@ -86,7 +87,9 @@
                       </div>
                     </el-form>
                   </el-tab-pane>
+                  <!-- get parms结束 -->
                   <el-tab-pane label="Header" name="header">
+                    <!-- 控制头部信息开始 -->
                     <el-form ref="formInline" class="demo-form-inline" label-position="right" label-width='20px'>
                       <div>
                         <el-button size="mini" type="text" icon="el-icon-plus" @click="addExtraHeadInput">Headers</el-button>
@@ -138,24 +141,65 @@
                         </el-alert>
                       </div>
                     </el-form>
+                    <!-- 控制头部信息结束 -->
                   </el-tab-pane>
                   <el-tab-pane label="Body" name="body">
                     <el-tabs  type="border-card" v-model="activeName">
+                      <!-- 这是post请求，formdata数据格式开始 -->
                       <el-tab-pane label="form-data" name="form-data">
-                        <el-upload
-                          class="upload-demo"
-                          action="https://jsonplaceholder.typicode.com/posts/"
-                          :on-preview="handlePreview"
-                          :on-remove="handleRemove"
-                          :before-remove="beforeRemove"
-                          multiple
-                          :limit="3"
-                          :on-exceed="handleExceed"
-                          :file-list="fileList">
-                          <el-button size="small" type="primary">点击上传</el-button>
-                          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-                        </el-upload>
+                        <el-form ref="formInline" class="demo-form-inline" label-position="right" label-width='20px'>
+                      <div>
+                        <el-button size="mini" type="text" icon="el-icon-plus" @click="addPostParam()">Params</el-button>
+                        <el-popover
+                          placement="top-start"
+                          title=""
+                          width="500"
+                          trigger="hover">
+                          <el-alert
+                            title="参数操作指南"
+                            type="info"
+                            :closable="false">
+                            <template slot='title'>
+                              post请求，formdata格式
+                            </template>
+                          </el-alert>
+                          <i slot="reference" style="margin-left: 5px" class="el-icon-info"></i>
+                        </el-popover>
+                      </div>
+                      <div v-if="extraParams && extraParams.length > 0">
+                        <el-alert title="" type="info" :closable="false" :show-icon="false">
+                          <template slot='title'>
+                            <div v-for="(item,index) in extraParams" :key="index">
+                              <el-row>
+                                <el-col :span="5">
+                              <el-form-item
+                                :rules="[
+      { required: true, message: '请输入key', trigger: 'blur' }
+    ]">
+                                <el-input v-model="item.key" placeholder="key"></el-input>
+                              </el-form-item>
+                                </el-col>
+                                <el-col :span="15">
+                              <el-form-item
+                                :rules="[
+      { required: true, message: '请输入value值', trigger: 'blur' }
+    ]">
+                                <el-input  v-model="item.value" placeholder="value"></el-input>
+                              </el-form-item>
+                                </el-col>
+                                <el-col :span="4" >
+                              <el-button type="text" icon="el-icon-delete" style="color: #F56C6C; margin-left: 20px"
+                                         @click="delPostParam(index)">delete
+                              </el-button>
+                                </el-col>
+                              </el-row>
+                            </div>
+                          </template>
+                        </el-alert>
+                      </div>
+                    </el-form>
                       </el-tab-pane>
+                       <!-- 这是post请求，formdata数据格式结束 -->
                       <el-tab-pane label="x-xxx-form-urlencoded" name="x-xxx-form-urlencoded">
                         <el-form ref="formInline" class="demo-form-inline" label-position="right" label-width='20px'>
                           <div>
@@ -221,12 +265,6 @@
                       </el-tab-pane>
                       <el-tab-pane label="none" name="none" class="none">
                         <span  class="el-upload__tip">当前请求没有请求体</span>
-                        <!-- <el-input
-                          type="textarea"
-                          :rows="10"
-                          v-model="textarea_raw"
-                          :smart-indent="true">
-                        </el-input> -->
                       </el-tab-pane>
                     </el-tabs>
                   </el-tab-pane>
@@ -237,7 +275,7 @@
                     <b-code-editor
                           :key="new Date().getTime()"
                            v-model="responseData"
-                           :readonly="readonly"
+                           readonly
                            theme="idea"
                            height="auto"
                            :indent-unit="4"
@@ -252,7 +290,7 @@
       title="提示"
       :visible.sync="dialogVisible"
       width="70%"
-      :before-close="handleClose">
+      :before-close="()=>{}">
       <span>response</span>
     </el-dialog>
   </div>
@@ -266,8 +304,8 @@ export default {
   },
   data () {
     return {
-      jsonData: {},
-      responseData: {},
+      jsonData: '',
+      responseData: '',
       dialogVisible: false,
       // textarea_raw: {},
       template: { tempSource: '' },
@@ -282,6 +320,12 @@ export default {
         }
       ],
       extraHeadList: [
+        {
+          key: '',
+          value: ''
+        }
+      ],
+      extraParams: [
         {
           key: '',
           value: ''
@@ -353,7 +397,8 @@ export default {
         }
       })
       // if (res.code !== 20000) return this.$message.error('接口运行失败')
-      this.responseData = res.data.response
+      console.log(res.data.response)
+      this.responseData = JSON.stringify(res.data.response)
     },
     handClose () {
       this.dialogVisible = false
@@ -400,6 +445,12 @@ export default {
         value: ''
       })
     },
+    addPostParam () {
+      this.extraParams.push({
+        key: '',
+        value: ''
+      })
+    },
     addExtraHeadInput () {
       this.extraHeadList.push({
         key: '',
@@ -409,6 +460,9 @@ export default {
     delExtraInput (index) {
       this.extraList.splice(index, 1
       )
+    },
+    delPostParam (index) {
+      this.extraParams.splice(index, 1)
     },
     delExtraHeadInput (index) {
       this.extraHeadList.splice(index, 1)

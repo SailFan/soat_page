@@ -91,9 +91,7 @@ export default {
   data () {
     return {
       total: 0,
-      interfaceList: {
-
-      },
+      interfaceList: [],
       queryInfo: {
         pageSize: 20,
         currentPage: 1
