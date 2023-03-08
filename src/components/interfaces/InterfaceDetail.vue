@@ -383,7 +383,8 @@ export default {
       })
       // if (res.code !== 20000) return this.$message.error('接口运行失败')
       console.log(res.data.response)
-      this.responseData = JSON.stringify(res.data.response)
+      // this.responseData = JSON.stringify(res.data.response)
+      this.responseData = res.data.response
     },
     handClose () {
       this.dialogVisible = false
