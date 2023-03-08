@@ -19,26 +19,12 @@
                   <el-option label="https" value="https"></el-option>
                 </el-select>
               </el-form-item>
-              <!-- <el-form-item label="请求方法" label-width="80px">
-                <el-select v-model="baseInterfaceFormModel.interfaceMethod" placeholder="请选择" style="width: 200px" id="c">
-                  <el-option label="Get" value="Get"></el-option>
-                  <el-option label="Post" value="Post"></el-option>
-                  <el-option label="Delete" value="Delete"></el-option>
-                  <el-option label="Update" value="Update"></el-option>
-                </el-select>
-                </el-form-item>
-                <el-form-item label="接口路径" label-width="80px" prop="interfaceName">
-                    <el-input placeholder="请输入接口路径" v-model="baseInterfaceFormModel.interfaceName" style="width:300px">
-                    <template slot="append">保存</template>
-                    <template slot="append">运行</template>
-                    </el-input>
-                </el-form-item> -->
                 <el-form-item label="接口协议" label-width="80px">
                   <el-input   placeholder="请输入path" v-model="baseInterfaceFormModel.interfacePath" class="input-with-select">
                   <el-select v-model="baseInterfaceFormModel.interfaceMethod" slot="prepend" placeholder="请选择" style="width:150px">
                     <el-option label="GET" value="GET"></el-option>
                     <el-option label="POST" value="POST"></el-option>
-                    <el-option label="UPDATE" value="UPDATE"></el-option>
+                    <el-option label="PUT" value="PUT"></el-option>
                     <el-option label="DELETE" value="DELETE"></el-option>
                   </el-select>
                   <el-button slot="append" @click="savaInterfaceData">保存</el-button>
@@ -155,7 +141,7 @@
                   </el-tab-pane>
                   <el-tab-pane label="Body" name="body">
                     <el-tabs  type="border-card" v-model="activeName">
-                      <el-tab-pane label="file" name="first">
+                      <el-tab-pane label="form-data" name="form-data">
                         <el-upload
                           class="upload-demo"
                           action="https://jsonplaceholder.typicode.com/posts/"
@@ -170,7 +156,7 @@
                           <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                         </el-upload>
                       </el-tab-pane>
-                      <el-tab-pane label="form" name="second">
+                      <el-tab-pane label="x-xxx-form-urlencoded" name="x-xxx-form-urlencoded">
                         <el-form ref="formInline" class="demo-form-inline" label-position="right" label-width='20px'>
                           <div>
                             <el-button size="mini" type="text" icon="el-icon-plus" @click="addFormExtraInput">raw</el-button>
@@ -223,23 +209,24 @@
                           </div>
                         </el-form>
                       </el-tab-pane>
-                      <el-tab-pane label="json" name="third" width="100%">
+                      <el-tab-pane label="raw" name="raw" width="100%">
                           <b-code-editor
                           :key="new Date().getTime()"
-                           v-value="jsonData"
+                           v-model="jsonData"
                            theme="idea"
                            height="auto"
                            :indent-unit="4"
                           >
                           </b-code-editor>
                       </el-tab-pane>
-                      <el-tab-pane label="raw" name="fourth">
-                        <el-input
+                      <el-tab-pane label="none" name="none" class="none">
+                        <span  class="el-upload__tip">当前请求没有请求体</span>
+                        <!-- <el-input
                           type="textarea"
                           :rows="10"
                           v-model="textarea_raw"
                           :smart-indent="true">
-                        </el-input>
+                        </el-input> -->
                       </el-tab-pane>
                     </el-tabs>
                   </el-tab-pane>
@@ -279,10 +266,10 @@ export default {
   },
   data () {
     return {
-      jsonData: '',
-      responseData: '',
+      jsonData: {},
+      responseData: {},
       dialogVisible: false,
-      textarea_raw: {},
+      // textarea_raw: {},
       template: { tempSource: '' },
       fileList: [
         { name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' },
@@ -313,7 +300,7 @@ export default {
         interfacePath: '',
         interfaceMethod: 'GET'
       },
-      activeName: 'params',
+      activeName: 'raw',
       activePart: 'params',
       editBaseSettingFormRules: {
         interfaceName: [
@@ -351,21 +338,22 @@ export default {
       this.baseInterfaceFormModel.interfacePath = res.data.path
       this.baseInterfaceFormModel.interfaceMethod = res.data.method
       this.extraList = res.data.params
+      this.jsonData = res.data.body
       this.extraHeadList = res.data.headers
     },
-    runInterfaceData () {
+    async runInterfaceData () {
       this.activePart = 'response'
-      this.$refs.baseInterfaceFormRef.validate(async (valid) => {
-        const { data: res } = await this.$http.post('interface/directlyRunInterface', {
-          baseData: this.baseInterfaceFormModel,
-          params: this.extraList,
-          body: this.jsonData,
-          headers: this.extraHeadList,
+      if (typeof this.baseInterfaceFormModel.id === 'undefined') {
+        return this.$message.error('先保存，再运行')
+      }
+      const { data: res } = await this.$http.get('/interface/runInterface', {
+        params: {
+          id: this.baseInterfaceFormModel.id,
           projectId: this.projectId
-        })
-        if (res.code !== 20000) return this.$message.error('接口保存失败')
-        this.responseData = res.data.message
+        }
       })
+      // if (res.code !== 20000) return this.$message.error('接口运行失败')
+      this.responseData = res.data.response
     },
     handClose () {
       this.dialogVisible = false
@@ -389,12 +377,15 @@ export default {
           params: this.extraList,
           body: this.jsonData,
           headers: this.extraHeadList,
-          projectId: this.projectId
+          projectId: this.projectId,
+          activeName: this.activeName
         })
         if (res.code === 40036) return this.$message.error('新增接口时，接口名称不可重复')
-        if (res.code !== 20000) return this.$message.error('接口保存失败')
-        this.$router.push({ path: '/iManagement' })
+        if (res.code === 20000) return this.$message.success('保存成功')
       })
+      if (typeof this.baseInterfaceFormModel.id === 'undefined') {
+        return this.$router.push({ path: '/iManagement' })
+      }
       this.getInterfaceDate()
     },
     addExtraInput () {
@@ -416,7 +407,8 @@ export default {
       })
     },
     delExtraInput (index) {
-      this.extraList.splice(index, 1)
+      this.extraList.splice(index, 1
+      )
     },
     delExtraHeadInput (index) {
       this.extraHeadList.splice(index, 1)
@@ -441,5 +433,11 @@ input .el-input-group__prepend {
 }
 /deep/ .el-alert__content {
   width: 100%;
+}
+.none {
+  text-align: center;
+  span {
+    color: #dddddd;
+  }
 }
 </style>

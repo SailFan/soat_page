@@ -37,9 +37,9 @@
           <el-table-column
             prop="run"
             label="状态">
-            <template slot-scope="scope">
-           <span>{{scope.row.run|capitalize}}</span>
-        </template>
+          <template slot-scope="scope">
+            <span :style="{ color: scope.row.run ==true ? 'green' : 'red' }">{{scope.row.run == false ? '失败' : ' 成功' }}</span>
+          </template>
           </el-table-column>
            <el-table-column label="操作" width="200px">
             <template  slot-scope="scope">
@@ -131,6 +131,7 @@ export default {
     ...mapState(['projectId'])
   },
   filters: {
+    // 当前方法没有用到
     capitalize (value) {
       if (value) return '通过'
       // eslint-disable-next-line no-return-assign
@@ -194,4 +195,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.red {
+  color: red !important;
+}
+.green {
+  color: #409eff !important;
+}
 </style>
