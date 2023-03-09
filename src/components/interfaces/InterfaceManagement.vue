@@ -125,6 +125,9 @@ export default {
     this.getAllInterface()
   },
 
+  onload () {
+    this.getAllInterface()
+  },
   computed: {
     ...mapState(['projectId'])
   },

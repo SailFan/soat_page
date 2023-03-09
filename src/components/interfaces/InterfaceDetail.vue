@@ -381,9 +381,7 @@ export default {
           projectId: this.projectId
         }
       })
-      // if (res.code !== 20000) return this.$message.error('接口运行失败')
       console.log(res.data.response)
-      // this.responseData = JSON.stringify(res.data.response)
       this.responseData = res.data.response
     },
     handClose () {
@@ -409,7 +407,9 @@ export default {
           body: this.jsonData,
           headers: this.extraHeadList,
           projectId: this.projectId,
-          activeName: this.activeName
+          activeName: this.activeName,
+          extraParams: this.extraParams,
+          extraFormList: this.extraFormList
         })
         if (res.code === 40036) return this.$message.error('新增接口时，接口名称不可重复')
         if (res.code === 20000) return this.$message.success('保存成功')

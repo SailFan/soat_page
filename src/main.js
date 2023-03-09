@@ -5,6 +5,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 import CodeEditor from 'bin-code-editor'
+import VCharts from 'v-charts'
 import store from './store'
 
 Vue.prototype.$http = axios
@@ -15,6 +16,7 @@ axios.interceptors.request.use(config => {
 })
 Vue.use(ElementUI)
 Vue.use(CodeEditor)
+Vue.use(VCharts)
 Vue.config.productionTip = false
 
 new Vue({
