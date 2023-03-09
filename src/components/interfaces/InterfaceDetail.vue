@@ -356,7 +356,7 @@ export default {
       this.baseInterfaceFormModel.interfaceProtocol = res.data.procotol
       this.baseInterfaceFormModel.interfacePath = res.data.path
       this.baseInterfaceFormModel.interfaceMethod = res.data.method
-      this.requestParms = res.data.params
+      this.extraList = res.data.params
       this.jsonData = res.data.body
       this.urlencoded = res.data.uforms
       this.extraHeadList = res.data.headers
