@@ -33,7 +33,7 @@
                 </el-form-item>
             </el-form>
             <!-- get param 开始 -->
-                <el-tabs style="padding-top: 20px" v-model="activePart">
+            <el-tabs style="padding-top: 20px" v-model="activePart">
                   <el-tab-pane label="Params" name="params">
                     <el-form ref="formInline" class="demo-form-inline" label-position="right" label-width='20px'>
                       <div>
@@ -203,7 +203,7 @@
                       <el-tab-pane label="x-xxx-form-urlencoded" name="x-xxx-form-urlencoded">
                         <el-form ref="formInline" class="demo-form-inline" label-position="right" label-width='20px'>
                           <div>
-                            <el-button size="mini" type="text" icon="el-icon-plus" @click="addFormExtraInput">raw</el-button>
+                            <el-button size="mini" type="text" icon="el-icon-plus" @click="addUrlencoded()">key/value</el-button>
                             <el-popover
                               placement="top-start"
                               title=""
@@ -220,10 +220,10 @@
                               <i slot="reference" style="margin-left: 5px" class="el-icon-info"></i>
                             </el-popover>
                           </div>
-                          <div v-if="extraFormList && extraFormList.length > 0">
+                          <div v-if="urlencoded && urlencoded.length > 0">
                             <el-alert title="" type="info" :closable="false" :show-icon="false">
                               <template slot='title'>
-                                <div v-for="(item,index) in extraFormList" :key="index">
+                                <div v-for="(item,index) in urlencoded" :key="index">
                                   <el-row>
                                     <el-col :span="5">
                                       <el-form-item
@@ -243,7 +243,7 @@
                                     </el-col>
                                     <el-col :span="4" >
                                       <el-button type="text" icon="el-icon-delete" style="color: #F56C6C; margin-left: 20px"
-                                                 @click="delFormExtraHeadInput(index)">delete
+                                                 @click="delUrlencoded(index)">delete
                                       </el-button>
                                     </el-col>
                                   </el-row>
@@ -307,21 +307,11 @@ export default {
       jsonData: '',
       responseData: '',
       dialogVisible: false,
-      // textarea_raw: {},
       template: { tempSource: '' },
-      fileList: [
-        { name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' },
-        { name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }
-      ],
-      extraList: [],
-      extraHeadList: [
-        {
-          key: '',
-          value: ''
-        }
-      ],
+      extraHeadList: [],
       extraParams: [],
-      extraFormList: [],
+      extraList: [],
+      urlencoded: [],
       baseInterfaceFormModel: {
         id: this.$route.query.id,
         interfaceName: '',
@@ -366,9 +356,11 @@ export default {
       this.baseInterfaceFormModel.interfaceProtocol = res.data.procotol
       this.baseInterfaceFormModel.interfacePath = res.data.path
       this.baseInterfaceFormModel.interfaceMethod = res.data.method
-      this.extraList = res.data.params
+      this.requestParms = res.data.params
       this.jsonData = res.data.body
+      this.urlencoded = res.data.uforms
       this.extraHeadList = res.data.headers
+      this.extraParams = res.data.extraParams
     },
     async runInterfaceData () {
       this.activePart = 'response'
@@ -409,12 +401,14 @@ export default {
           projectId: this.projectId,
           activeName: this.activeName,
           extraParams: this.extraParams,
+          urlencoded: this.urlencoded,
           extraFormList: this.extraFormList
         })
         if (res.code === 40036) return this.$message.error('新增接口时，接口名称不可重复')
         if (res.code === 20000) return this.$message.success('保存成功')
       })
       if (typeof this.baseInterfaceFormModel.id === 'undefined') {
+        this.getInterfaceDate()
         return this.$router.push({ path: '/iManagement' })
       }
       this.getInterfaceDate()
@@ -425,8 +419,9 @@ export default {
         value: ''
       })
     },
+    // x-xxx-form-urlencoded
     addFormExtraInput () {
-      this.extraFormList.push({
+      this.extraParams.push({
         key: '',
         value: ''
       })
@@ -443,8 +438,18 @@ export default {
         value: ''
       })
     },
+    addUrlencoded () {
+      this.urlencoded.push({
+        key: '',
+        value: ''
+      })
+    },
     delExtraInput (index) {
       this.extraList.splice(index, 1
+      )
+    },
+    delUrlencoded (index) {
+      this.urlencoded.splice(index, 1
       )
     },
     delPostParam (index) {

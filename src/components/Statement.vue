@@ -15,7 +15,7 @@
     <h1>统计图表</h1>
     <div class="chart">
       <template>
-        <ve-line :data="chartData" :settings="chartSettings"></ve-line>
+        <ve-line :data="chartData" ></ve-line>
       </template>
     </div>
   </div>
