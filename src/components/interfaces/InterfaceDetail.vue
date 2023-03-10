@@ -255,9 +255,8 @@
                       </el-tab-pane>
                       <el-tab-pane label="raw" name="raw" width="100%">
                           <b-code-editor
-                          :key="new Date().getTime()"
+                          v-if="true"
                            v-model="jsonData"
-                           on-change="change"
                            theme="idea"
                            height="auto"
                            :indent-unit="4"
@@ -444,9 +443,6 @@ export default {
         key: '',
         value: ''
       })
-    },
-    change () {
-      console.log('改变了')
     },
     delExtraInput (index) {
       this.extraList.splice(index, 1
