@@ -257,6 +257,7 @@
                           <b-code-editor
                           :key="new Date().getTime()"
                            v-model="jsonData"
+                           on-change="change"
                            theme="idea"
                            height="auto"
                            :indent-unit="4"
@@ -443,6 +444,9 @@ export default {
         key: '',
         value: ''
       })
+    },
+    change () {
+      console.log('改变了')
     },
     delExtraInput (index) {
       this.extraList.splice(index, 1
